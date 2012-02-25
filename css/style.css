@@ -1,3 +1,22 @@
+#batchSelect{
+  margin:0
+}
+
+#batchSelect .control-group{
+  margin:4px 9px 0 9px;
+}
+
+#batchSelect .control-label{
+  margin-right:5px;
+  color:#ccc;
+  font-weight:bold
+}
+
+#batchSelect select{
+  width:75px;
+}
+
+
 #content{
   display:none;
   overflow:hidden;
@@ -102,8 +121,32 @@
 }
 
 
+#legend{
+  position:absolute;
+  top:10px;
+  left:10px;
+  width:600px;  float:right;
+}
+
+
+#legend .legend{
+  margin:4px;
+  vertical-align:top;
+  text-shadow: 1px 1px 1px #ffffff;
+  filter: dropshadow(color=#ffffff, offx=1, offy=1);
+}
+
+#legend .legend div{
+  width:15px;
+  height:15px;
+  display:inline-block;
+  margin-right:4px;
+}
+
+
 /* Bubble Styles */
 #chart{
+  position:relative;
   width:600px;
   height:600px;
   float:right;
@@ -115,7 +158,7 @@ circle {
   cursor:pointer;
 }
 
-text {
+#chart text {
   font: 10px sans-serif;
   cursor:pointer;
 }

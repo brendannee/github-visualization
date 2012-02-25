@@ -4,44 +4,76 @@
 
 
 var githubApi = 'https://api.github.com/'
-  , students = []
-  , repoCount = 0
-  , processCount = 0;
-  
-var studentList = [
-    'davidbalbert'
-  ,'zallarak'
-  , 'thomasballinger'
-  , 'nicholasbs'
-  , 'jab'
-  , 'cirsteve'
-  , 'jconnolly'
-  , 'daniellesucher'
-  , 'dustineichler'
-  , 'stuntgoat'
-  , 'myf'
-  , 'colinmarc'
-  , 'davemckenna01'
-  , 'nmichalov'
-  , 'brendannee'
-  , 'jollysonali'
-  , 'sidnicious'
-];
+    , students = []
+    , processCount = 0
+    , showPopovers = true
+    , HSList = [
+  [
+      'muffs'
+    , 'j2labs'
+    , 'happy4crazy'
+    , 'ArtemTitoulenko'
+    , 'KyleWpppd'
+    , 'workmajj'
+  ],
+  [
+      'gone'
+    , 'levberlin'
+    , 'omni5cience'
+    , 'ramz15'
+    , 'talos'
+    , 'kristiankristensen'
+    , 'jyli7'
+    , 'sethmurphy'
+    , 'jordanorelli'
+    , 'supacliny'
+  ],
+  [
+      'davidbalbert'
+    , 'zallarak'
+    , 'thomasballinger'
+    , 'nicholasbs'
+    , 'jab'
+    , 'cirsteve'
+    , 'jconnolly'
+    , 'daniellesucher'
+    , 'dustineichler'
+    , 'stuntgoat'
+    , 'myf'
+    , 'colinmarc'
+    , 'davemckenna01'
+    , 'nmichalov'
+    , 'brendannee'
+    , 'jollysonali'
+    , 'sidnicious'
+  ]
+  ];
 
 
 $(document).ready(function(){
 
-
   if(sessionStorage.getItem('students')){
+    //get data out of cache
     students = JSON.parse(sessionStorage.getItem('students'));
-    buildContent();
+    buildContent(2);
   } else {
-    studentList.forEach(getData);
+    //fetch data for all batches
+    fetchContent();
   }
 
+  $('#batchSelect select').change(function(){
+    var batch = $(this).val();
+    $('#students .student:nth-child(2)').popover('hide');
+    showPopovers = false;
+
+    buildContent(batch);
+  });
+
+  //Click handler for student divs
   $('#students').on('click', '.student', function(){
     //hide popover
     $('#students .student:nth-child(2)').popover('hide');
+    showPopovers = false;
     
     //hide stats
     $('#repoInfo').css('visibility','hidden');
@@ -60,36 +92,62 @@ $(document).ready(function(){
       }
     });
   });
-  
-  
 });
 
-function getData(userName, index){
-  var student;
-  $.getJSON(githubApi + 'users/' + userName + '?callback=?', function(data){
-    student = data.data;
-    $.getJSON(githubApi + 'users/' + userName + '/repos?callback=?', function(data){
-      repoCount += data.data.length;
-      student.repos = data.data;
-      student.preHSLanguages = {};
-      student.postHSLanguages = {};
-      student.preHSRepos = [];
-      student.postHSRepos = [];
-      students.push(student);
-      if(index == (studentList.length - 1)){
-        processRepos();
-      }
-    });
+function fetchContent(){
+  var studentCounter = 0
+    , studentCount = 0;
+
+  HSList.forEach(function(batch){ studentCount += batch.length; });
+
+  HSList.forEach(function(batch){
+    batch.forEach(getData);
   });
+
+
+  function getData(userName, index){
+    var student;
+
+    $.getJSON(githubApi + 'users/' + userName + '?callback=?', function(data){
+      student = data.data;
+      $.getJSON(githubApi + 'users/' + userName + '/repos?callback=?', function(data){
+        student.repos = data.data;
+        student.preHSLanguages = {};
+        student.postHSLanguages = {};
+        student.preHSRepos = [];
+        student.postHSRepos = [];
+
+        student.batch = lookupBatch(student);
+
+        students.push(student);
+
+        studentCounter++;
+        if(studentCounter == (studentCount - 1)){
+          processRepos();
+        }
+      });
+    });
+  }
+}
+
+function lookupBatch(student){
+  for(var i=0; i < HSList.length; i++){
+    if(HSList[i].indexOf(student.login.toLowerCase()) > -1){
+      return i;
+    }
+  }
+  return false;
 }
 
 function processRepos(){
-  
+
   var repoCounter = 0
+    , repoCount = 0
     , batchStartDate = new Date(2012, 1, 13);
-    
-  students.forEach(function(student, i){      
+
+  students.forEach(function(student, i){
     student.repos.forEach(function(repo, j){
+      repoCount++;
       $.getJSON(githubApi + 'repos/' + student.login + '/' + repo.name + '/languages?callback=?', function(data){
         students[i].repos[j].languages = data.data;
         
@@ -127,7 +185,7 @@ function processRepos(){
           sessionStorage.setItem('students', JSON.stringify(students));
 
           //build content
-          buildContent();
+          buildContent(2);
         }
 
       });
@@ -136,33 +194,39 @@ function processRepos(){
   });
 }
 
-function buildContent(){
+function buildContent(batch){
   //remove loading
   $('#loading').fadeOut();
+  $('#students').html('')
   $('#content').fadeIn();
   $('footer').fadeIn();
-  $('#students .student:nth-child(2)').popover({placement: 'right', trigger:'manual',  title:"Welcome", content:"Select a Hacker Schooler to begin"});
-  $('#students .student:nth-child(2)').popover('show');
-
 
   students.forEach(function(student){
-    var preHSlanguages = JSON.stringify(getLanguagePercents(student.preHSLanguages)).replace(/,"/g,', "')
-      , postHSlanguages = JSON.stringify(getLanguagePercents(student.postHSLanguages)).replace(/,"/g,', "')
-      , displayName = (student.name) ? student.name : student.login;
-    
-    
-    $('<div>')
-      .addClass('student')
-      .attr('data-github', student.login)
-      .html('<img src="' + student.avatar_url + '"><h3>' + displayName + '</h3>')
-      .append('<div class="additionalInfo"><div class="followers">Followers: ' + student.followers + '</div>' +
-        '<div class="repos">Repos: ' + student.public_repos + ' (' + (student.preHSRepos.length +student.postHSRepos.length) + ' non-fork)</div>' +
-        '<div class="githubLink"><a href="' + student.html_url + '">' + student.html_url + '</a></div>' +
-        '<div>Hacker School</div>' +
-        '<div class="preHS">{Pre: {repos:' +  student.preHSRepos.length + ', languages:' + preHSlanguages + '},</div>' +
-        '<div class="postHS">Post: {repos:' +  student.postHSRepos.length + ', languages: ' + postHSlanguages + '}}</div></div>')
-      .appendTo('#students');
+    if(student.batch == batch){
+      var preHSlanguages = JSON.stringify(getLanguagePercents(student.preHSLanguages)).replace(/,"/g,', "')
+        , postHSlanguages = JSON.stringify(getLanguagePercents(student.postHSLanguages)).replace(/,"/g,', "')
+        , displayName = (student.name) ? student.name : student.login;
+      
+      $('<div>')
+        .addClass('student')
+        .attr('data-github', student.login)
+        .attr('batch', batch)
+        .html('<img src="' + student.avatar_url + '"><h3>' + displayName + '</h3>')
+        .append('<div class="additionalInfo"><div class="followers">Followers: ' + student.followers + '</div>' +
+          '<div class="repos">Repos: ' + student.public_repos + ' (' + (student.preHSRepos.length +student.postHSRepos.length) + ' non-fork)</div>' +
+          '<div class="githubLink"><a href="' + student.html_url + '">' + student.html_url + '</a></div>' +
+          '<div>Hacker School</div>' +
+          '<div class="preHS">{Pre: {repos:' +  student.preHSRepos.length + ', languages:' + preHSlanguages + '},</div>' +
+          '<div class="postHS">Post: {repos:' +  student.postHSRepos.length + ', languages: ' + postHSlanguages + '}}</div></div>')
+        .appendTo('#students');
+    }
   });
+  
+  if(showPopovers){
+    $('#students .student:nth-child(2)')
+      .popover({placement: 'right', trigger:'manual',  title:"Welcome", content:"Select a Hacker Schooler to begin"})
+      .popover('show');
+  }
 }
 
 function getLanguagePercents(languages){
@@ -178,7 +242,7 @@ function getLanguagePercents(languages){
 }
 
 function drawChart(student){
-  var r = 600
+  var r = 615
     , format = d3.format(",d")
     , fill = d3.scale.category20();
 
@@ -265,16 +329,31 @@ function drawChart(student){
 
   // Returns a flattened hierarchy containing all leaf nodes under the root.
   function classes(student) {
-    var classes = [];
+    var classes = []
+      , languages = [];
 
     student.repos.forEach(function(repo) {
       //remove forks
       if(!repo.fork){
         classes.push({language: repo.language, title: repo.name, value: repo.size, html_url: repo.html_url, description: repo.description, languages: repo.languages, forks: repo.forks, watchers: repo.watchers, homepage: repo.homepage, login: repo.owner.login });
       }
+
+      //build legend
+      if(languages.indexOf(repo.language) == -1){
+        languages.push(repo.language);
+      }
     });
+
+    $('#legend').html('');
+    languages.forEach(function(language){
+      $('<div>')
+        .addClass(language + ' legend')
+        .html('<div style="background-color:' + fill(language) + '"></div>' + language)
+        .appendTo('#legend');
+    });
+
     return {children: classes};
   }
-  
+
 }
 
