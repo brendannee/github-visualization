@@ -24,8 +24,8 @@ var studentList = [
   , 'davemckenna01'
   , 'nmichalov'
   , 'brendannee'
+  , 'jollysonali'
   , 'sidnicious'
-  //, 'jollysonali'
 ];
 
 
@@ -117,7 +117,11 @@ function processRepos(){
               students[i].postHSLanguages[l] += repo.languages[l];
             }
           }
-        }
+        }        
+        //increment loading
+        $('#loading .bar').css('width', '' + Math.ceil(repoCounter/repoCount*100) + '%');
+        repoCounter++;
+
         if(repoCounter == (repoCount-1)){
           //store as local variable
           sessionStorage.setItem('students', JSON.stringify(students));
@@ -125,11 +129,7 @@ function processRepos(){
           //build content
           buildContent();
         }
-        
-        //increment loading
-        $('#loading .bar').css('width', '' + Math.ceil(repoCounter/repoCount*100) + '%');
-        
-        repoCounter++;
+
       });
     });
    
