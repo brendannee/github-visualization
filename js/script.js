@@ -86,7 +86,7 @@ function getData(userName, index){
 function processRepos(){
   
   var repoCounter = 0
-    , batchStartDate = new Date(2012, 2, 13);
+    , batchStartDate = new Date(2012, 1, 13);
     
   students.forEach(function(student, i){      
     student.repos.forEach(function(repo, j){
@@ -146,7 +146,8 @@ function buildContent(){
 
 
   students.forEach(function(student){
-    var languages = getLanguagePercents(student.preHSLanguages)
+    var preHSlanguages = JSON.stringify(getLanguagePercents(student.preHSLanguages)).replace(/,"/g,', "')
+      , postHSlanguages = JSON.stringify(getLanguagePercents(student.postHSLanguages)).replace(/,"/g,', "')
       , displayName = (student.name) ? student.name : student.login;
     
     
@@ -154,8 +155,12 @@ function buildContent(){
       .addClass('student')
       .attr('data-github', student.login)
       .html('<img src="' + student.avatar_url + '"><h3>' + displayName + '</h3>')
-      .append('<div class="additionalInfo"><div class="followers">Followers: ' + student.followers + '<div><div class="repos">Repos: ' + student.public_repos + '</div>' +
-        '<div class="languages">Languages: ' + JSON.stringify(languages).replace(',"',', "') + '</div><a href="' + student.html_url + '">' + student.html_url + '</a></div>')
+      .append('<div class="additionalInfo"><div class="followers">Followers: ' + student.followers + '</div>' +
+        '<div class="repos">Repos: ' + student.public_repos + ' (' + (student.preHSRepos.length +student.postHSRepos.length) + ' non-fork)</div>' +
+        '<div class="githubLink"><a href="' + student.html_url + '">' + student.html_url + '</a></div>' +
+        '<div>Hacker School</div>' +
+        '<div class="preHS">{Pre: {repos:' +  student.preHSRepos.length + ', languages:' + preHSlanguages + '},</div>' +
+        '<div class="postHS">Post: {repos:' +  student.postHSRepos.length + ', languages: ' + postHSlanguages + '}}</div></div>')
       .appendTo('#students');
   });
 }

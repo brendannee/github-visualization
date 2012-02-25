@@ -52,6 +52,13 @@
   padding-top:5px;
 }
 
+#students .student .additionalInfo .repos,
+#students .student .additionalInfo .followers{
+  display:inline-block;
+  margin-right:10px;
+
+}
+
 #loading{
   width:500px;
   position: absolute;
