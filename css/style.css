@@ -124,7 +124,7 @@
 #legend{
   position:absolute;
   top:10px;
-  left:10px;
+  left:0;
   width:600px;  float:right;
 }
 
@@ -147,8 +147,8 @@
 /* Bubble Styles */
 #chart{
   position:relative;
-  width:600px;
-  height:600px;
+  width:615px;
+  height:615px;
   float:right;
 }
 
