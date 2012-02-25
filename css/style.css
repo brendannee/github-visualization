@@ -1,5 +1,7 @@
 #content{
   display:none;
+  overflow:hidden;
+  min-height:600px;
 }
 
 #students{
@@ -100,4 +102,11 @@ circle {
 text {
   font: 10px sans-serif;
   cursor:pointer;
+}
+
+footer{
+  padding: 10px 10px 5px 10px;
+  text-align: right;
+  border-top: 1px solid #CCC;
+  margin-top: 20px;
 }
