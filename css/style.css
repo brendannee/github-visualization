@@ -63,7 +63,7 @@
   width:600px;
   float:left;
   padding: 0 15px;
-  height:100px;
+  height:125px;
   overflow:hidden;
 }
 
@@ -84,6 +84,16 @@
   display:inline-block;
   margin-right:10px;
 }
+
+#repoInfo .collaborators img{
+  width: 20px;
+  height: 20px;
+}
+
+#repoInfo .stats .languages{
+  display:block;
+}
+
 
 /* Bubble Styles */
 #chart{

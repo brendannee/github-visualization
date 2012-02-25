@@ -31,13 +31,21 @@ var studentList = [
 
 $(document).ready(function(){
 
-  //get all repos by username
-  studentList.forEach(getData);
-  
+
+  if(sessionStorage.getItem('students')){
+    students = JSON.parse(sessionStorage.getItem('students'));
+    buildContent();
+  } else {
+    studentList.forEach(getData);
+  }
+
   $('#students').on('click', '.student', function(){
     //hide popover
     $('#students .student:nth-child(2)').popover('hide');
     
+    //hide stats
+    $('#repoInfo').css('visibility','hidden');
+
     var div = this;
     //get student info for chart
     students.forEach(function(student){
@@ -111,15 +119,11 @@ function processRepos(){
           }
         }
         if(repoCounter == (repoCount-1)){
+          //store as local variable
+          sessionStorage.setItem('students', JSON.stringify(students));
+
           //build content
           buildContent();
-          
-          //remove loading
-          $('#loading').fadeOut();
-          $('#content').fadeIn();
-          $('footer').fadeIn();
-          $('#students .student:nth-child(2)').popover({placement: 'right', trigger:'manual',  title:"Welcome", content:"Select a Hacker Schooler to begin"});
-          $('#students .student:nth-child(2)').popover('show');
         }
         
         //increment loading
@@ -133,6 +137,14 @@ function processRepos(){
 }
 
 function buildContent(){
+  //remove loading
+  $('#loading').fadeOut();
+  $('#content').fadeIn();
+  $('footer').fadeIn();
+  $('#students .student:nth-child(2)').popover({placement: 'right', trigger:'manual',  title:"Welcome", content:"Select a Hacker Schooler to begin"});
+  $('#students .student:nth-child(2)').popover('show');
+
+
   students.forEach(function(student){
     var languages = getLanguagePercents(student.preHSLanguages)
       , displayName = (student.name) ? student.name : student.login;
@@ -201,6 +213,37 @@ function drawChart(student){
       $('#repoInfo .link a')
         .html(d.html_url)
         .attr('href', d.html_url);
+
+      //get collaborators and commit info
+      var key = d.login + '/' + d.title;
+      if(sessionStorage.getItem(key)){
+        //get from sessionstorage
+        updateRepoInfo(JSON.parse(sessionStorage.getItem(key)));
+
+      } else {
+        $.getJSON(githubApi + 'repos/' + d.login + '/' + d.title + '/collaborators?callback=?', function(data){
+          var repoInfo = { collaborators: data.data };
+          $.getJSON(githubApi + 'repos/' + d.login + '/' + d.title + '/commits?callback=?', function(data){
+            repoInfo.commits = data.data;
+            //save to session storage
+            sessionStorage.setItem(key, JSON.stringify(repoInfo));
+
+            updateRepoInfo(repoInfo);
+          });
+        });
+      }
+
+      function updateRepoInfo(repoInfo){
+        var collaboratorsDiv = '';
+        repoInfo.collaborators.forEach(function(collaborator){
+          collaboratorsDiv += '<a href="' + collaborator.url + '" title="' + collaborator.login + '"><img src="' + collaborator.avatar_url + '"></a>';
+        });
+        $('#repoInfo .collaborators span').html(collaboratorsDiv);
+
+        var lastCommitDate = new Date(repoInfo.commits[0].commit.committer.date);
+        $('#repoInfo .commits span').html('<a href="' + repoInfo.commits[0].url + '" title="' + repoInfo.commits[0].commit.message + '">' + lastCommitDate.toLocaleDateString() + '</a>');
+      }
+
     });
 
   node.append("title")
@@ -222,7 +265,7 @@ function drawChart(student){
     student.repos.forEach(function(repo) {
       //remove forks
       if(!repo.fork){
-        classes.push({language: repo.language, title: repo.name, value: repo.size, html_url: repo.html_url, description: repo.description, languages: repo.languages, forks: repo.forks, watchers: repo.watchers, homepage: repo.homepage });
+        classes.push({language: repo.language, title: repo.name, value: repo.size, html_url: repo.html_url, description: repo.description, languages: repo.languages, forks: repo.forks, watchers: repo.watchers, homepage: repo.homepage, login: repo.owner.login });
       }
     });
     return {children: classes};
