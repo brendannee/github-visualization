@@ -26,6 +26,7 @@ var studentList = [
   , 'brendannee'
   , 'jollysonali'
   , 'sidnicious'
+  , 'omni5cience'
 ];
 
 
