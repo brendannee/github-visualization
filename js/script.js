@@ -34,7 +34,6 @@ $(document).ready(function(){
   //get all repos by username
   studentList.forEach(getData);
   
-  
   $('#students').on('click', '.student', function(){
     //hide popover
     $('#students .student:nth-child(2)').popover('hide');
@@ -118,6 +117,7 @@ function processRepos(){
           //remove loading
           $('#loading').fadeOut();
           $('#content').fadeIn();
+          $('footer').fadeIn();
           $('#students .student:nth-child(2)').popover({placement: 'right', trigger:'manual',  title:"Welcome", content:"Select a Hacker Schooler to begin"});
           $('#students .student:nth-child(2)').popover('show');
         }
