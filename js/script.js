@@ -25,7 +25,7 @@ var studentList = [
   , 'nmichalov'
   , 'brendannee'
   , 'sidnicious'
-  , 'jollysonali'
+  //, 'jollysonali'
 ];
 
 
@@ -111,7 +111,6 @@ function processRepos(){
             }
           }
         }
-        
         if(repoCounter == (repoCount-1)){
           //build content
           buildContent();
