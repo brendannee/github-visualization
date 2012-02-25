@@ -46,6 +46,7 @@ var githubApi = 'https://api.github.com/'
     , 'brendannee'
     , 'jollysonali'
     , 'sidnicious'
+    , 'shwaydogg'
   ]
   ];
 
