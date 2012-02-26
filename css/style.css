@@ -125,7 +125,9 @@
   position:absolute;
   top:10px;
   left:0;
-  width:600px;  float:right;
+  width:600px;  
+  float:right;
+  z-index:-100;
 }
 
 
