@@ -47,6 +47,7 @@ var githubApi = 'https://api.github.com/'
     , 'jollysonali'
     , 'sidnicious'
     , 'shwaydogg'
+    , 'lchi'
   ]
   ]
     , batchStartDates = [
