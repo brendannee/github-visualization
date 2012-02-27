@@ -12,8 +12,8 @@ var githubApi = 'https://api.github.com/'
       'muffs'
     , 'j2labs'
     , 'happy4crazy'
-    , 'ArtemTitoulenko'
-    , 'KyleWpppd'
+    , 'artemtitoulenko'
+    , 'kylewpppd'
     , 'workmajj'
   ],
   [
@@ -48,6 +48,11 @@ var githubApi = 'https://api.github.com/'
     , 'sidnicious'
     , 'shwaydogg'
   ]
+  ]
+    , batchStartDates = [
+      new Date(2012, 1, 13)
+    , new Date(2012, 1, 13)
+    , new Date(2012, 1, 13)
   ];
 
 
@@ -143,8 +148,7 @@ function lookupBatch(student){
 function processRepos(){
 
   var repoCounter = 0
-    , repoCount = 0
-    , batchStartDate = new Date(2012, 1, 13);
+    , repoCount = 0;
 
   students.forEach(function(student, i){
     student.repos.forEach(function(repo, j){
@@ -154,7 +158,7 @@ function processRepos(){
         
         //Exclude forks
         if(!repo.fork){
-          if(Date.parse(repo.created_at) < batchStartDate.getTime()){
+          if(Date.parse(repo.created_at) < batchStartDates[students[i].batch].getTime()){
             students[i].repos[j].preHS =  true;
             students[i].preHSRepos.push(repo.name);
 
