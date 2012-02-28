@@ -2,7 +2,6 @@
 (function(a){function b(){}for(var c="assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profileEnd,time,timeEnd,trace,warn".split(","),d;!!(d=c.pop());){a[d]=a[d]||b;}})
 (function(){try{console.log();return window.console;}catch(a){return (window.console={});}}());
 
-
 var githubApi = 'https://api.github.com/'
     , students = []
     , processCount = 0
@@ -203,7 +202,7 @@ function processRepos(){
 function buildContent(batch){
   //remove loading
   $('#loading').fadeOut();
-  $('#students').html('')
+  $('#students').empty();
   $('#content').fadeIn();
   $('footer').fadeIn();
 
@@ -217,7 +216,7 @@ function buildContent(batch){
         .addClass('student')
         .attr('data-github', student.login)
         .attr('batch', batch)
-        .html('<img src="' + student.avatar_url + '"><h3>' + displayName + '</h3>')
+        .html('<img src="' + student.avatar_url + '"><h3>' + bleach.sanitize(displayName) + '</h3>')
         .append('<div class="additionalInfo"><div class="followers">Followers: ' + student.followers + '</div>' +
           '<div class="repos">Repos: ' + student.public_repos + ' (' + (student.preHSRepos.length +student.postHSRepos.length) + ' non-fork)</div>' +
           '<div class="githubLink"><a href="' + student.html_url + '">' + student.html_url + '</a></div>' +
@@ -275,11 +274,11 @@ function drawChart(student){
       $('#repoInfo').css('visibility', 'visible');
       
       $('#repoInfo h3 a')
-        .html(d.title)
+        .html( bleach.sanitize(d.title))
         .attr('href', d.html_url);
-      $('#repoInfo .description').html(d.description);
+      $('#repoInfo .description').html( bleach.sanitize(d.description));
       if(d.homepage){
-         $('#repoInfo .description').append(' <a href="' + d.homepage + '" title="Project Website">' + d.homepage + '</a>');
+         $('#repoInfo .description').append(' <a href="' +  bleach.sanitize(d.homepage) + '" title="Project Website">' +  bleach.sanitize(d.homepage) + '</a>');
       }
       
       $('#repoInfo .forks span').html(d.forks);
@@ -350,7 +349,7 @@ function drawChart(student){
       }
     });
 
-    $('#legend').html('');
+    $('#legend').empty();
     languages.forEach(function(language){
       $('<div>')
         .addClass(language + ' legend')
