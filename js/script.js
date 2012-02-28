@@ -55,8 +55,11 @@ var githubApi = 'https://api.github.com/'
     , new Date(2012, 1, 13)
   ];
 
-
 $(document).ready(function(){
+
+  window.onresize = resizeWindow;
+
+  populateBatches();
 
   if(sessionStorage.getItem('students')){
     //get data out of cache
@@ -99,6 +102,24 @@ $(document).ready(function(){
     });
   });
 });
+
+
+function resizeWindow(){
+  //make app the height of the window
+  var minHeight = 400
+    , contentHeight = $(window).height() - $('#topMenu').height() - $('footer').height()
+    , studentsHeight = $(window).height() - $('#topMenu').height() - $('footer').height() - $('#batchSelectContainer').height();
+
+  $('#content').height(Math.max(contentHeight, minHeight));
+  $('#students').height(studentsHeight);
+}
+
+function populateBatches(){
+  batchStartDates.forEach(function(batch, index){
+    var formattedDate = new Date(batch);
+    $('#batchSelect select').prepend('<option value="' + index + '">' + index + ' (' + (batch.getMonth() + 1) + '/' + batch.getFullYear() + ')</option>');
+  });
+}
 
 function fetchContent(){
   var studentCounter = 0
@@ -232,6 +253,9 @@ function buildContent(batch){
       .popover({placement: 'right', trigger:'manual',  title:"Welcome", content:"Select a Hacker Schooler to begin"})
       .popover('show');
   }
+
+  //resize window when done
+  resizeWindow();
 }
 
 function getLanguagePercents(languages){
@@ -247,7 +271,7 @@ function getLanguagePercents(languages){
 }
 
 function drawChart(student){
-  var r = 615
+  var r = Math.min(615, ( $('#content').height() - $('#repoInfo').height() ))
     , format = d3.format(",d")
     , fill = d3.scale.category20();
 

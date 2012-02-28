@@ -1,19 +1,49 @@
+.navbar{
+  margin-bottom:0;
+}
+
+#leftSidebar{
+  width:300px;
+  float:left;
+}
+
+#batchSelectContainer{
+  background:#ccc;
+  background: -moz-linear-gradient(top, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.19) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.08)), color-stop(100%,rgba(0,0,0,0.19))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.19) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.19) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.19) 100%); /* IE10+ */
+  background: linear-gradient(top, rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.19) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#14000000', endColorstr='#30000000',GradientType=0 ); /* IE6-9 */
+  overflow:hidden;
+}
+
+
 #batchSelect{
-  margin:0
+  margin:0;
+  border-bottom:#aaa 1px solid;
+  padding:4px 0;
 }
 
 #batchSelect .control-group{
-  margin:4px 9px 0 9px;
+  padding:0 9px;
+  margin-bottom:0;
 }
 
 #batchSelect .control-label{
   margin-right:5px;
-  color:#ccc;
-  font-weight:bold
+  color:#333;
+  font-weight:bold;
+  width:100px;
+}
+
+#batchSelect .controls{
+  margin-left:100px;
 }
 
 #batchSelect select{
-  width:75px;
+  width:125px;
 }
 
 
@@ -24,7 +54,8 @@
 
 #students{
   width:300px;
-  float:left;
+  overflow:scroll;
+  background:#EEE;
 }
 
 #students .student{
@@ -33,6 +64,9 @@
   padding:4px 10px;
   cursor:pointer;
   border-bottom:1px solid #ccc;
+  -webkit-box-shadow: inset 0px 3px 4px 1px rgba(150, 150, 150, 0.1);
+  -moz-box-shadow: inset 0px 3px 4px 1px rgba(150, 150, 150, 0.1);
+  box-shadow: inset 0px 3px 4px 1px rgba(150, 150, 150, 0.1);
 }
 
 #students .student:first-child{
@@ -42,10 +76,13 @@
 #students .student:hover,
 #students .student.active:hover{
   background:#e6e6e6;
+  -webkit-box-shadow: inset 0px 0px 4px 1px rgba(150, 150, 150, 0.5);
+  -moz-box-shadow: inset 0px 0px 4px 1px rgba(150, 150, 150, 0.5);
+  box-shadow: inset 0px 0px 4px 1px rgba(150, 150, 150, 0.5);
 }
 
 #students .student.active{
-  background:#eee;
+  background:#e6e6e6;
 }
 
 #students .student img{
@@ -63,6 +100,8 @@
   line-height:40px;
   overflow: hidden;
   height: 40px;
+  text-shadow: 1px 1px 2px #d4d4d4;
+  filter: dropshadow(color=#d4d4d4, offx=1, offy=1);
 }
 
 #students .student .additionalInfo{
@@ -155,6 +194,11 @@
   float:right;
 }
 
+#chart svg{
+  margin: 0 auto;
+  display:block;
+}
+
 circle {
   stroke: #fff;
   stroke-width: 1.5px;
@@ -167,9 +211,22 @@ circle {
 }
 
 footer{
-  display:none;
-  padding: 10px 10px 5px 10px;
-  text-align: right;
-  border-top: 1px solid #CCC;
-  margin-top: 20px;
+  background: #2C2C2C;
+  color:#fff;
+
 }
+
+footer a{
+  color:#fff;
+}
+
+footer a:hover{
+  color:#ccc;
+}
+
+footer .footer-container{
+  padding: 10px 0;
+  border-top: 1px solid #CCC;
+  text-align: right;
+}
+
