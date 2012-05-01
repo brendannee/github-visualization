@@ -70,7 +70,7 @@ $(document).ready(function(){
   if(sessionStorage.getItem('students')){
     //get data out of cache
     students = JSON.parse(sessionStorage.getItem('students'));
-    buildContent(2);
+    renderBatch(2);
   } else {
     //fetch data for all batches
     fetchContent();
@@ -78,14 +78,16 @@ $(document).ready(function(){
 
   //Display options form controls
   $('#batchSelect').change(function(){
-    var batch = $(this).val();
-    $('#students .student:nth-child(2)').popover('hide');
-    options.showPopovers = false;
-
-    buildContent(batch);
+    hidePopups();
+    renderBatch($(this).val());
   });
 
   $('#showForks').change(processStudent);
+
+  $('#random').click(function(){
+    getRandom();
+    return false;
+  });
 
   //Click handler for student divs
   $('#students').on('click', '.student', processStudent);
@@ -152,19 +154,30 @@ function fetchContent(){
   }
 }
 
+function hidePopups(){
+  //hide popups
+  $('#students .student:nth-child(2)').popover('hide');
+  options.showPopovers = false;
+}
+
 
 function processStudent(){
+
   //update options
   updateOptionsFromForm()
 
   if($(this).hasClass('student')){
-    $(this)
-      .addClass('active')
-      .siblings()
-        .removeClass('active')
-        .children('.additionalInfo').slideUp();
-    $('.additionalInfo', this).slideDown();
+    var div = $(this);
+  } else {
+    var div = $('.student.active');
   }
+
+  $(div)
+    .addClass('active')
+    .siblings()
+      .removeClass('active')
+      .children('.additionalInfo').slideUp();
+  $('.additionalInfo', div).slideDown();
 
   //hide popover
   $('#students .student:nth-child(2)').popover('hide');
@@ -235,7 +248,7 @@ function processRepos(){
         if(repoCounter == (repoCount-1)){
           //store as local variable, then build content
           sessionStorage.setItem('students', JSON.stringify(students));
-          buildContent(2);
+          renderBatch(2);
         }
       });
     });
@@ -243,12 +256,17 @@ function processRepos(){
 }
 
 
-function buildContent(batch){
+function renderBatch(batch){
   //remove loading
   $('#loading').fadeOut();
   $('#students').empty();
   $('#content').fadeIn();
   $('footer').fadeIn();
+
+  //select matching from dropdown
+  $('#batchSelect option').filter(function(){
+    return $(this).val() == batch;
+  }).attr('selected', true)
 
   students.forEach(function(student){
     if(student.batch == batch){
@@ -296,6 +314,61 @@ function getLanguagePercents(languages){
 }
 
 
+function showRepoInfo(repo) {
+  //show repo info
+  $('#repoInfo').css('visibility', 'visible');
+
+  (repo.fork) ? $('#repoInfo').addClass('isfork') : $('#repoInfo').removeClass('isfork');
+  $('#repoInfo h3 a')
+    .html(bleach.sanitize(repo.name))
+    .attr('href', repo.html_url);
+  $('#repoInfo .description').html( bleach.sanitize(repo.description));
+  if(repo.homepage){
+     $('#repoInfo .description').append(' <a href="' +  bleach.sanitize(repo.homepage) + '" title="Project Website">' +  bleach.sanitize(repo.homepage) + '</a>');
+  }
+  $('#repoInfo .forks span').html(repo.forks);
+  $('#repoInfo .watchers span').html(repo.watchers);
+  $('#repoInfo .languages span').html( JSON.stringify( getLanguagePercents(repo.languages) ).replace(',"',', "') );
+  $('#repoInfo .link a')
+    .html(repo.html_url)
+    .attr('href', repo.html_url);
+
+  //get collaborators and commit info
+  var key = repo.owner.login + '/' + repo.name;
+  if(sessionStorage.getItem(key)){
+    //get from sessionstorage
+    updateRepoInfo(JSON.parse(sessionStorage.getItem(key)));
+
+  } else {
+    var collaboratorUrl = githubApi + 'repos/' + repo.owner.login + '/' + repo.name + '/collaborators?callback=?';
+    $.getJSON(collaboratorUrl, function(data){
+      var repoInfo = { collaborators: data.data };
+      var commitUrl = githubApi + 'repos/' + repo.owner.login + '/' + repo.name + '/commits?callback=?';
+      $.getJSON(commitUrl, function(data){
+        repoInfo.commits = data.data;
+
+        //save to session storage
+        sessionStorage.setItem(key, JSON.stringify(repoInfo));
+
+        updateRepoInfo(repoInfo);
+      });
+    });
+  }
+
+  function updateRepoInfo(repoInfo){
+    var collaboratorsDiv = '';
+    repoInfo.collaborators.forEach(function(collaborator){
+      collaboratorsDiv += '<a href="' + collaborator.url + '" title="' + collaborator.login + '"><img src="' + collaborator.avatar_url + '"></a>';
+    });
+    $('#repoInfo .collaborators span').html(collaboratorsDiv);
+
+    var lastCommitDate = new Date(repoInfo.commits[0].commit.committer.date);
+    $('#repoInfo .commits span').html('<a href="' + repoInfo.commits[0].url + '" title="' + repoInfo.commits[0].commit.message + '">' + lastCommitDate.toLocaleDateString() + '</a>');
+  }
+
+}
+
+
 function drawChart(student){
 
   var r = Math.min(615, ( $('#content').height() - $('#repoInfo').height() ))
@@ -320,62 +393,10 @@ function drawChart(student){
     .enter().append("g")
     .attr("class", "node")
     .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-    .on('mouseover', function(d){
-
-      //show repo info
-      $('#repoInfo').css('visibility', 'visible');
-
-      (d.fork) ? $('#repoInfo').addClass('isfork') : $('#repoInfo').removeClass('isfork');
-      $('#repoInfo h3 a')
-        .html(bleach.sanitize(d.title))
-        .attr('href', d.html_url);
-      $('#repoInfo .description').html( bleach.sanitize(d.description));
-      if(d.homepage){
-         $('#repoInfo .description').append(' <a href="' +  bleach.sanitize(d.homepage) + '" title="Project Website">' +  bleach.sanitize(d.homepage) + '</a>');
-      }
-      $('#repoInfo .forks span').html(d.forks);
-      $('#repoInfo .watchers span').html(d.watchers);
-      $('#repoInfo .languages span').html( JSON.stringify( getLanguagePercents(d.languages) ).replace(',"',', "') );
-      $('#repoInfo .link a')
-        .html(d.html_url)
-        .attr('href', d.html_url);
-
-      //get collaborators and commit info
-      var key = d.login + '/' + d.title;
-      if(sessionStorage.getItem(key)){
-        //get from sessionstorage
-        updateRepoInfo(JSON.parse(sessionStorage.getItem(key)));
-
-      } else {
-        var collaboratorUrl = githubApi + 'repos/' + d.login + '/' + d.title + '/collaborators?callback=?';
-        $.getJSON(collaboratorUrl, function(data){
-          var repoInfo = { collaborators: data.data };
-          var commitUrl = githubApi + 'repos/' + d.login + '/' + d.title + '/commits?callback=?';
-          $.getJSON(commitUrl, function(data){
-            repoInfo.commits = data.data;
-            //save to session storage
-            sessionStorage.setItem(key, JSON.stringify(repoInfo));
-
-            updateRepoInfo(repoInfo);
-          });
-        });
-      }
-
-      function updateRepoInfo(repoInfo){
-        var collaboratorsDiv = '';
-        repoInfo.collaborators.forEach(function(collaborator){
-          collaboratorsDiv += '<a href="' + collaborator.url + '" title="' + collaborator.login + '"><img src="' + collaborator.avatar_url + '"></a>';
-        });
-        $('#repoInfo .collaborators span').html(collaboratorsDiv);
-
-        var lastCommitDate = new Date(repoInfo.commits[0].commit.committer.date);
-        $('#repoInfo .commits span').html('<a href="' + repoInfo.commits[0].url + '" title="' + repoInfo.commits[0].commit.message + '">' + lastCommitDate.toLocaleDateString() + '</a>');
-      }
-
-    });
+    .on('mouseover', showRepoInfo);
 
   node.append("title")
-    .text(function(d) { return d.title + ": " + d.description });
+    .text(function(d) { return d.name + ": " + d.description });
 
   node.append("circle")
     .attr("r", function(d) { return d.r; })
@@ -384,7 +405,7 @@ function drawChart(student){
   node.append("text")
     .attr("text-anchor", "middle")
     .attr("dy", ".3em")
-    .text(function(d) { return d.title.substring(0, d.r / 3); });
+    .text(function(d) { return d.name.substring(0, d.r / 3); });
 
   // Returns a flattened hierarchy containing all leaf nodes under the root.
   function classes(student) {
@@ -392,10 +413,9 @@ function drawChart(student){
       , languages = [];
 
     student.repos.forEach(function(repo) {
-      console.log(repo);
       //remove forks, if option is set
       if(!repo.fork || options.forks){
-        classes.push({language: repo.language, title: repo.name, value: repo.size, html_url: repo.html_url, description: repo.description, languages: repo.languages, fork: repo.fork, forks: repo.forks, watchers: repo.watchers, homepage: repo.homepage, login: repo.owner.login });
+        classes.push({language: repo.language, name: repo.name, value: repo.size, html_url: repo.html_url, description: repo.description, languages: repo.languages, fork: repo.fork, forks: repo.forks, watchers: repo.watchers, homepage: repo.homepage, owner: repo.owner });
       }
 
       //build legend
@@ -417,3 +437,27 @@ function drawChart(student){
 
 }
 
+
+function getRandom(){
+  hidePopups();
+
+  //randomize students
+  var randStudent = students[Math.floor(Math.random() * students.length)];
+
+  //show batch
+  renderBatch(randStudent.batch);
+
+  //select student div
+  $('.student').removeClass('active');
+  $('.student[data-github=' + randStudent.login + ']').addClass('active');
+
+  processStudent();
+
+  //randomize repos
+  var randRepo = randStudent.repos[Math.floor(Math.random() * randStudent.repos.length)];
+  showRepoInfo(randRepo);
+
+  //scroll to user
+  var index = $('.student').index($('.student[data-github=' + randStudent.login + ']'));
+  $('#students').scrollTop(index * 50);
+}
