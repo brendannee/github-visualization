@@ -31,12 +31,18 @@
     
     <div id="content">
       <div id="leftSidebar">
-        <div id="batchSelectContainer">
-          <div id="batchSelect" class="form-horizontal">
+        <div id="displayOptionsContainer">
+          <div id="displayOptions" class="form-horizontal">
             <div class="control-group">
-              <label class="control-label" for="select01">Batch</label>
+              <label class="control-label" for="batchSelect">Batch</label>
               <div class="controls">
-                <select id="select01"></select>
+                <select id="batchSelect"></select>
+              </div>
+            </div>
+            <div class="control-group checkbox">
+              <label class="control-label" for="showForks">Show Forks</label>
+              <div class="controls">
+                <input type="checkbox" id="showForks"></input>
               </div>
             </div>
           </div>
@@ -44,7 +50,7 @@
         <div id="students"></div>
       </div>
       <div id="repoInfo">
-        <h3><a href="#"></a></h3>
+        <h3><a href="#"></a><span class="fork" title="It's a fork!">&#9282;</span></h3>
         <div class="description"></div>
         <div class="stats">
           <div class="watchers">Watchers: <span></span></div>

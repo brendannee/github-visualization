@@ -25,7 +25,7 @@
   float:left;
 }
 
-#batchSelectContainer{
+#displayOptionsContainer{
   background:#ccc;
   background: -moz-linear-gradient(top, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.19) 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.08)), color-stop(100%,rgba(0,0,0,0.19))); /* Chrome,Safari4+ */
@@ -38,32 +38,36 @@
 }
 
 
-#batchSelect{
+#displayOptions{
   margin:0;
   border-bottom:#aaa 1px solid;
   padding:4px 0;
 }
 
-#batchSelect .control-group{
+#displayOptions .control-group{
   padding:0 9px;
   margin-bottom:0;
 }
 
-#batchSelect .control-label{
+#displayOptions .control-label{
   margin-right:5px;
   color:#333;
   font-weight:bold;
   width:100px;
 }
 
-#batchSelect .controls{
+#displayOptions .controls{
   margin-left:100px;
 }
 
-#batchSelect select{
-  width:125px;
+#displayOptions .checkbox .controls input {
+  margin-top: 9px;
+  margin-left: 0px;
 }
 
+#displayOptions select{
+  width:125px;
+}
 
 #content{
   display:none;
@@ -153,6 +157,16 @@
 
 #repoInfo h3{
   margin-right:7px;
+}
+
+#repoInfo h3 .fork {
+  display: none;
+  padding-left: 10px;
+  font-size: 120%;
+}
+
+#repoInfo.isfork h3 .fork {
+  display: inline;
 }
 
 #repoInfo .description{
