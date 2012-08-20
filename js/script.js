@@ -264,6 +264,9 @@ function processRepos(){
     , repoCount = 0;
 
   students.forEach(function(student, i){
+    if(!student.repos){
+      return;
+    }
     student.repos.forEach(function(repo, j){
       repoCount++;
       var languagesUrl = githubApi + 'repos/' + student.login + '/' + repo.name + '/languages?callback=?';
