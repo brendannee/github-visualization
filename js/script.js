@@ -107,6 +107,7 @@ var githubApi = 'https://api.github.com/'
         new Date(2011, 6, 18)
       , new Date(2011, 8, 29)
       , new Date(2012, 1, 13)
+      , new Date(2012, 6, 4)
     ];
 
 $(document).ready(function(){
