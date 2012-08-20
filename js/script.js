@@ -12,7 +12,6 @@ var githubApi = 'https://api.github.com/'
     [
         'muffs'
       , 'j2labs'
-      , 'happy4crazy'
       , 'artemtitoulenko'
       , 'kylewpppd'
       , 'workmajj'
@@ -33,8 +32,6 @@ var githubApi = 'https://api.github.com/'
         'davidbalbert'
       , 'zallarak'
       , 'antoviaque'
-      , 'thomasballinger'
-      , 'nicholasbs'
       , 'jab'
       , 'lchi'
       , 'cirsteve'
@@ -46,65 +43,64 @@ var githubApi = 'https://api.github.com/'
       , 'davemckenna01'
       , 'nmichalov'
       , 'brendannee'
-      , 'jollysonali'
       , 'sidnicious'
       , 'shwaydogg'
       , 'euccastro'
     ],
 		[
-			'thomasballinger',
-			'nicholasabs',
-			'shirmung',
-			'cavedweller',
-			'davekong',
-			'ingrid',
-			'S714726',
-			'maryrosecook',
-			'pepijndevos',
-			'oxling',
-			'ericfode',
-			'dillonforrest',
-			'dustingetz',
-			'nphoff',
-			'akaptur',
-			'jamak',
-			'JasonLaster',
-			'bev-a-tron',
-			'davidleibovic',
-			'bmacri',
-			'vickimo',
-			'niftynei',
-			'linse',
-			'dunvi',
-			'grstearns',
-			'oskarth',
-			'zachallaun',
-			'aerenchyma',
-			'doda',
-			'Sean-Der',
-			'lpellis',
-			'yaelelmatad',
-			'julienfantin',
-			'tgebru',
-			'marthakelly',
-			'smargonz',
-			'TreyLawrence',
-			'drrckln',
-			'govindmanian',
-			'dennismartensson',
-			'ariamoraine',
-			'muhtasib',
-			'happy4crazy',
-			'sarenji',
-			'trucy',
-			'vu2srk',
-			'bramsey',
-			'mil',
-			'fiveplusone',
-			'jns2',
-			'jollysonali',
-			'sunahsuh',
-			'janewang' 
+  			'thomasballinger'
+  		, 'nicholasabs'
+  		, 'shirmung'
+  		, 'cavedweller'
+  		, 'davekong'
+  		, 'ingrid'
+  		, 'S714726'
+  		, 'maryrosecook'
+  		, 'pepijndevos'
+  		, 'oxling'
+  		, 'ericfode'
+  		, 'dillonforrest'
+  		, 'dustingetz'
+  		, 'nphoff'
+  		, 'akaptur'
+  		, 'jamak'
+  		, 'JasonLaster'
+  		, 'bev-a-tron'
+  		, 'davidleibovic'
+  		, 'bmacri'
+  		, 'vickimo'
+  		, 'niftynei'
+  		, 'linse'
+  		, 'dunvi'
+  		, 'grstearns'
+  		, 'oskarth'
+  		, 'zachallaun'
+  		, 'aerenchyma'
+  		, 'doda'
+  		, 'Sean-Der'
+  		, 'lpellis'
+  		, 'yaelelmatad'
+  		, 'julienfantin'
+  		, 'tgebru'
+  		, 'marthakelly'
+  		, 'smargonz'
+  		, 'TreyLawrence'
+  		, 'drrckln'
+  		, 'govindmanian'
+  		, 'dennismartensson'
+  		, 'ariamoraine'
+  		, 'muhtasib'
+  		, 'happy4crazy'
+  		, 'sarenji'
+  		, 'trucy'
+  		, 'vu2srk'
+  		, 'bramsey'
+  		, 'mil'
+  		, 'fiveplusone'
+  		, 'jns2'
+  		, 'jollysonali'
+  		, 'sunahsuh'
+  		, 'janewang' 
 		]
   ]
     , batchStartDates = [
@@ -254,7 +250,7 @@ function processStudent(){
 
 function lookupBatch(student) {
   for(var i=0; i < HSList.length; i++) {
-    if(HSList[i].indexOf(student.login.toLowerCase()) > -1) {
+    if(student.login && HSList[i].indexOf(student.login.toLowerCase()) > -1) {
       return i;
     }
   }
@@ -412,6 +408,9 @@ function showRepoInfo(repo) {
 
   function updateRepoInfo(repoInfo){
     var collaboratorsDiv = '';
+    if(!repoInfo.collaborators){
+      return;
+    }
     repoInfo.collaborators.forEach(function(collaborator){
       collaboratorsDiv += '<a href="' + collaborator.url + '" title="' + collaborator.login + '"><img src="' + collaborator.avatar_url + '"></a>';
     });
