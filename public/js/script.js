@@ -98,6 +98,7 @@ $(document).ready(function(){
   });
 
   $('#showForks').change(function(){
+    hidePopups();
     showStudent(getStudentFromLogin($('#students .student.active').data('login')));
   });
 
@@ -134,6 +135,7 @@ $(document).ready(function(){
   $('#studentList').on('click', '.student', function (){
     hidePopups();
     showStudent(getStudentFromLogin($(this).data('login')));
+    scrollToActiveStudent();
     $('#batches')
       .parent().addClass('active')
       .siblings().removeClass('active');
@@ -231,26 +233,29 @@ function formatStudent(student, batch) {
 
 
 function showRepoInfo(repo) {
-  //show repo info
-  $('#repoInfo').css('visibility', 'visible');
+  if(repo) {
+    $('#repoInfo').css('visibility', 'visible');
 
-  (repo.fork) ? $('#repoInfo').addClass('isfork') : $('#repoInfo').removeClass('isfork');
-  $('#repoInfo h3 a')
-    .html(bleach.sanitize(repo.name))
-    .attr('href', repo.html_url);
-  $('#repoInfo .description').html( bleach.sanitize(repo.description));
-  if(repo.homepage){
-     $('#repoInfo .description').append(' <a href="' +  bleach.sanitize(repo.homepage) + '" title="Project Website">' +  bleach.sanitize(repo.homepage) + '</a>');
+    (repo.fork) ? $('#repoInfo').addClass('isfork') : $('#repoInfo').removeClass('isfork');
+    $('#repoInfo h3 a')
+      .html(bleach.sanitize(repo.name))
+      .attr('href', repo.html_url);
+    $('#repoInfo .description').html( bleach.sanitize(repo.description));
+    if(repo.homepage){
+       $('#repoInfo .description').append(' <a href="' +  bleach.sanitize(repo.homepage) + '" title="Project Website">' +  bleach.sanitize(repo.homepage) + '</a>');
+    }
+    $('#repoInfo .forks span').html(repo.forks_count);
+    $('#repoInfo .watchers span').html(repo.watchers_count);
+    $('#repoInfo .languages span')
+      .html(repo.language)
+      .css('color', colors[repo.language]);
+    $('#repoInfo .created span').text($.timeago(repo.created_at));
+    $('#repoInfo .link a')
+      .html(repo.html_url)
+      .attr('href', repo.html_url);
+  } else {
+    $('#repoInfo').css('visibility','hidden');
   }
-  $('#repoInfo .forks span').html(repo.forks_count);
-  $('#repoInfo .watchers span').html(repo.watchers_count);
-  $('#repoInfo .languages span')
-    .html(repo.language)
-    .css('color', colors[repo.language]);
-  $('#repoInfo .created span').text($.timeago(repo.created_at));
-  $('#repoInfo .link a')
-    .html(repo.html_url)
-    .attr('href', repo.html_url);
 }
 
 function fill(language) {
@@ -331,6 +336,7 @@ function getStudentFromLogin(login) {
 function getRandom() {
   //randomize students
   showStudent(students[Math.floor(Math.random() * students.length)]);
+  scrollToActiveStudent();
 }
 
 
@@ -342,15 +348,16 @@ function showStudent(student) {
   renderBatch(student.batch_id);
 
   //select student div
+  $('.student .additionalInfo')
+    .slideUp('fast', function () {
+      $(this).parents('.student').removeClass('active');
+    });
   $('.student')
-    .removeClass('active')
-    .children('.additionalInfo').slideUp()
-    .end()
     .filter(function(){
       return $(this).data('login') == student.login;
     })
     .addClass('active')
-    .children('.additionalInfo').slideDown();
+    .find('.additionalInfo').slideDown('fast');
 
   //update options
   updateOptionsFromForm()
@@ -360,7 +367,9 @@ function showStudent(student) {
 
   //randomize repos
   showRepoInfo(student.repos[Math.floor(Math.random() * student.repos.length)]);
+}
 
+function scrollToActiveStudent () {
   //scroll to user
   var index = $('.student').index($('.student.active'));
   $('#students').scrollTop(index * 50 - 25);
