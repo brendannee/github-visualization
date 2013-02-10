@@ -90,7 +90,7 @@ $(document).ready(function (){
   $.getJSON('/api/batches', function (batches){
     batches.forEach(function (batch){
       var formattedDate = new Date(batch.startDate);
-      $('#batchSelect').append('<option value="' + batch.batch_id + '">' + batch.batch_id + ' (' + (formattedDate.getMonth() + 1) + '/' + formattedDate.getFullYear() + ')</option>');
+      $('#batchSelect').prepend('<option value="' + batch.batch_id + '">' + batch.batch_id + ' (' + (formattedDate.getMonth() + 1) + '/' + formattedDate.getFullYear() + ')</option>');
     });
   });
 
@@ -107,7 +107,7 @@ $(document).ready(function (){
       })).sort();
     })
 
-    renderBatch("0");
+    renderBatch("4");
   });
 
   //Display options form controls
@@ -133,7 +133,7 @@ $(document).ready(function (){
 
   $('#batches').click(function (){
     hidePopups();
-    renderBatch("0");
+    renderBatch("4");
   });
 
   $('#random').click(getRandom);
