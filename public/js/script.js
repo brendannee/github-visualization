@@ -1,84 +1,88 @@
 var students
-    , options = {
-      showPopovers: true
-    }
-    , colors = {
-      "Arduino": "#bd79d1",
-      "Java": "#b07219",
-      "VHDL": "#543978",
-      "Scala": "#7dd3b0",
-      "Emacs Lisp": "#c065db",
-      "Delphi": "#b0ce4e",
-      "Ada": "#02f88c",
-      "VimL": "#199c4b",
-      "Perl": "#0298c3",
-      "Lua": "#fa1fa1",
-      "Rebol": "#358a5b",
-      "Verilog": "#848bf3",
-      "Factor": "#636746",
-      "Ioke": "#078193",
-      "R": "#198ce7",
-      "Erlang": "#949e0e",
-      "Nu": "#c9df40",
-      "AutoHotkey": "#6594b9",
-      "Clojure": "#db5855",
-      "Shell": "#5861ce",
-      "Assembly": "#a67219",
-      "Parrot": "#f3ca0a",
-      "C#": "#555",
-      "Turing": "#45f715",
-      "AppleScript": "#3581ba",
-      "Eiffel": "#946d57",
-      "Common Lisp": "#3fb68b",
-      "Dart": "#cccccc",
-      "SuperCollider": "#46390b",
-      "CoffeeScript": "#244776",
-      "XQuery": "#2700e2",
-      "Haskell": "#29b544",
-      "Racket": "#ae17ff",
-      "Elixir": "#6e4a7e",
-      "HaXe": "#346d51",
-      "Ruby": "#701516",
-      "Self": "#0579aa",
-      "Fantom": "#dbded5",
-      "Groovy": "#e69f56",
-      "C": "#555",
-      "JavaScript": "#f15501",
-      "D": "#fcd46d",
-      "ooc": "#b0b77e",
-      "C++": "#f34b7d",
-      "Dylan": "#3ebc27",
-      "Nimrod": "#37775b",
-      "Standard ML": "#dc566d",
-      "Objective-C": "#f15501",
-      "Nemerle": "#0d3c6e",
-      "Mirah": "#c7a938",
-      "Boo": "#d4bec1",
-      "Objective-J": "#ff0c5a",
-      "Rust": "#dea584",
-      "Prolog": "#74283c",
-      "Ecl": "#8a1267",
-      "Gosu": "#82937f",
-      "FORTRAN": "#4d41b1",
-      "ColdFusion": "#ed2cd6",
-      "OCaml": "#3be133",
-      "Fancy": "#7b9db4",
-      "Pure Data": "#f15501",
-      "Python": "#3581ba",
-      "Tcl": "#e4cc98",
-      "Arc": "#ca2afe",
-      "Puppet": "#cc5555",
-      "Io": "#a9188d",
-      "Max": "#ce279c",
-      "Go": "#8d04eb",
-      "ASP": "#6a40fd",
-      "Visual Basic": "#945db7",
-      "PHP": "#6e03c1",
-      "Scheme": "#1e4aec",
-      "Vala": "#3581ba",
-      "Smalltalk": "#596706",
-      "Matlab": "#bb92ac"
-    };
+  , batches
+  , options = {
+    showPopovers: true
+  }
+  , colors = {
+    "ActionScript": "#DDD",
+    "Arduino": "#bd79d1",
+    "Java": "#b07219",
+    "VHDL": "#543978",
+    "Scala": "#7dd3b0",
+    "Emacs Lisp": "#c065db",
+    "Delphi": "#b0ce4e",
+    "Ada": "#02f88c",
+    "VimL": "#199c4b",
+    "Perl": "#0298c3",
+    "Lua": "#fa1fa1",
+    "Rebol": "#358a5b",
+    "Verilog": "#848bf3",
+    "Factor": "#636746",
+    "Ioke": "#078193",
+    "R": "#198ce7",
+    "Erlang": "#949e0e",
+    "Nu": "#c9df40",
+    "AutoHotkey": "#6594b9",
+    "Clojure": "#db5855",
+    "Shell": "#5861ce",
+    "Assembly": "#a67219",
+    "Parrot": "#f3ca0a",
+    "C#": "#555",
+    "Turing": "#45f715",
+    "AppleScript": "#3581ba",
+    "Eiffel": "#946d57",
+    "Common Lisp": "#3fb68b",
+    "Dart": "#cccccc",
+    "SuperCollider": "#46390b",
+    "CoffeeScript": "#244776",
+    "XQuery": "#2700e2",
+    "Haskell": "#29b544",
+    "Racket": "#ae17ff",
+    "Elixir": "#6e4a7e",
+    "HaXe": "#346d51",
+    "Ruby": "#701516",
+    "Self": "#0579aa",
+    "Fantom": "#dbded5",
+    "Groovy": "#e69f56",
+    "C": "#555",
+    "JavaScript": "#f15501",
+    "D": "#fcd46d",
+    "ooc": "#b0b77e",
+    "C++": "#f34b7d",
+    "Dylan": "#3ebc27",
+    "Nimrod": "#37775b",
+    "Standard ML": "#dc566d",
+    "Objective-C": "#f15501",
+    "Nemerle": "#0d3c6e",
+    "Mirah": "#c7a938",
+    "Boo": "#d4bec1",
+    "Objective-J": "#ff0c5a",
+    "Rust": "#dea584",
+    "Prolog": "#74283c",
+    "Ecl": "#8a1267",
+    "Gosu": "#82937f",
+    "FORTRAN": "#4d41b1",
+    "ColdFusion": "#ed2cd6",
+    "OCaml": "#3be133",
+    "Fancy": "#7b9db4",
+    "Pure Data": "#f15501",
+    "Python": "#3581ba",
+    "Tcl": "#e4cc98",
+    "Arc": "#ca2afe",
+    "Puppet": "#cc5555",
+    "Io": "#a9188d",
+    "Max": "#ce279c",
+    "Go": "#8d04eb",
+    "ASP": "#6a40fd",
+    "Visual Basic": "#945db7",
+    "PHP": "#6e03c1",
+    "Scheme": "#1e4aec",
+    "Vala": "#3581ba",
+    "Smalltalk": "#596706",
+    "Matlab": "#bb92ac",
+    "Julia": "#DDD",
+    "SciLab": "#DDD"
+  };
 
 
 $(document).ready(function (){
@@ -87,7 +91,8 @@ $(document).ready(function (){
 
   //initial options
   updateOptionsFromForm();
-  $.getJSON('/api/batches', function (batches){
+  $.getJSON('/api/batches', function (data){
+    batches = data;
     batches.forEach(function (batch){
       var formattedDate = new Date(batch.startDate);
       $('#batchSelect').prepend('<option value="' + batch.batch_id + '">' + batch.batch_id + ' (' + (formattedDate.getMonth() + 1) + '/' + formattedDate.getFullYear() + ')</option>');
@@ -145,6 +150,8 @@ $(document).ready(function (){
   $('#mostLanguages').click(getMostLanguages);
 
   $('#oldest').click(oldestAccount);
+
+  $('#summary').click(summary);
 
   //Click handler for student divs
   $('#students').on('click', '.student', function (){
@@ -307,12 +314,12 @@ function drawChart (student){
     .attr("dy", ".3em")
     .text(function (d) { return d.name.substring(0, d.r / 3); });
 
-  $('#legend').empty();
+  $('#chart .legendContainer').empty();
   student.languages.forEach(function (language){
     $('<div>')
       .addClass(language + ' legend')
       .html('<div style="background-color:' + fill(language) + '"></div>' + language)
-      .appendTo('#legend');
+      .appendTo('#chart .legendContainer');
   });
 
   // Returns a flattened hierarchy containing all leaf nodes under the root.
@@ -425,4 +432,115 @@ function oldestAccount() {
     $(studentDiv).addClass('oldest');
     $('#studentList').append(studentDiv);
   })
+}
+
+function summary() {
+  $('#content').hide();
+  $('#studentList').empty().show();
+
+
+ $('<div>')
+    .addClass('summary')
+    .append('<h2>Hacker School Summary</h2>')
+    .append($('<div>')
+      .addClass('title')
+      .text('Batches'))
+    .append($('<div>')
+      .addClass('value')
+      .text(batches.length))
+    .append('<br>')
+    .append($('<div>')
+      .addClass('title')
+      .text('Students'))
+    .append($('<div>')
+      .addClass('value')
+      .text(students.length))
+    .append('<br>')
+    .append($('<div>')
+      .addClass('title')
+      .text('Repos'))
+    .append($('<div>')
+      .addClass('value')
+      .text(_.reduce(students, function(memo, student){
+        return memo + student.repos.length;
+      }, 0)))
+    .append($('<h2>')
+      .text('Language Breakdown'))
+    .append($('<div>')
+      .attr('id', 'langchart')
+      .addClass('chart')
+      .append($('<div>')
+        .addClass('legendContainer'))
+      .append($('<div>')
+        .addClass('legendContainer')))
+    .appendTo('#studentList');
+
+  var languages = _.clone(colors);
+  _.each(languages, function(val, key){
+    languages[key] = 0;
+  });
+  students.forEach(function (student){
+    student.repos.forEach(function (repo){
+      if(repo.language){
+        languages[repo.language]++;
+      }
+    });
+  });
+  var data = _.filter(_.map(languages, function(val, key){
+    return {label: key, value: val};
+  }), function(val){
+    return val.value > 0;
+  });
+
+  //pie chart
+  var w = 500,
+      h = 500,
+      r = Math.min(w, h) / 2;
+
+
+  var svg = d3.select("#langchart").append("svg")
+      .data([data])
+      .attr("width", w)
+      .attr("height", h)
+      .append("g")
+      .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")");
+
+
+  var arc = d3.svg.arc()
+      .outerRadius(r - 10)
+      .innerRadius(r - 70);
+ 
+  var pie = d3.layout.pie()
+      .value(function(d) { return d.value; });
+ 
+  var arcs = svg.selectAll("g.slice")
+      .data(pie)
+      .enter()
+        .append("svg:g")
+          .attr("class", "slice");
+
+      arcs.append("svg:path")
+        .attr("fill", function (d) {return fill(d.data.label); })
+          .attr("d", arc);
+
+      arcs.append("svg:text")
+        .attr("transform", function(d) {
+          d.innerRadius = 0;
+          d.outerRadius = r;
+          return "translate(" + arc.centroid(d) + ")";
+        })
+        .attr("dy", ".35em")
+        .attr("text-anchor", "middle")
+        .text(function(d) { if((d.endAngle - d.startAngle) > 0.1) { return d.data.label; }});    
+
+
+ $('#langchart .legendContainer').empty();
+  _.sortBy(data, function(item) { return -item.value; }).forEach(function (item, idx){
+    var container = (idx < 18) ? $('#langchart .legendContainer:first-child') : $('#langchart .legendContainer:nth-child(2)');
+    $('<div>')
+      .addClass('legend')
+      .html('<div style="background-color:' + fill(item.label) + '"></div>' + item.label + ' (' + item.value + ')')
+      .appendTo(container);
+  });
+ 
 }

@@ -20,7 +20,7 @@ body {
 }
 
 .navbar .nav {
-  margin-left:50px;
+  margin-left: 20px;
 }
 
 .navbar .nav>li>a {
@@ -90,14 +90,15 @@ body {
   overflow:hidden;
   background: #fff;
   border-right: 1px solid rgb(204, 204, 204);
-  border-left: 1px solid rgb(204, 204, 204);;
+  border-left: 1px solid rgb(204, 204, 204);
 }
 
 #studentList {
   display: none;
   background: #fff;
   border-right: 1px solid rgb(204, 204, 204);
-  border-left: 1px solid rgb(204, 204, 204);;
+  border-left: 1px solid rgb(204, 204, 204);
+  overflow: hidden;
 }
 
 #students{
@@ -251,7 +252,7 @@ body {
 }
 
 
-#legend{
+.legendContainer {
   position: absolute;
   top: 10px;
   left: 0;
@@ -262,14 +263,14 @@ body {
 }
 
 
-#legend .legend{
+.legendContainer .legend{
   margin:4px;
   vertical-align:top;
   text-shadow: 1px 1px 1px #ffffff;
   filter: dropshadow(color=#ffffff, offx=1, offy=1);
 }
 
-#legend .legend div{
+.legendContainer .legend div{
   width:15px;
   height:15px;
   display:inline-block;
@@ -277,15 +278,26 @@ body {
 }
 
 
+#langchart .legendContainer:first-child {
+  margin-left: -130px;
+}
+#langchart .legendContainer:nth-child(2) {
+  margin-left: 30px;
+}
+
+#langchart svg {
+  margin-left: 230px;
+}
+
 /* Bubble Styles */
-#chart{
+.chart{
   position:relative;
   width:615px;
   height:615px;
   float:right;
 }
 
-#chart svg{
+.chart svg{
   margin: 0 auto;
   display:block;
 }
@@ -300,6 +312,51 @@ circle {
   font: 10px sans-serif;
   cursor:pointer;
 }
+
+.summary {
+  padding: 15px 10px;
+  margin: 0 auto;
+  width: 600px;
+}
+
+.summary .title {
+  display: inline-block;
+  width: 120px;
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 140px;
+  line-height: 40px;
+}
+
+.summary .value {
+  font-weight: bold;
+  font-size: 30px;
+  color: #333;
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  font-size: 18px;
+  border: 2px solid #999;
+  border-radius: 15px;
+  margin: 15px 0;
+  -webkit-box-shadow:  0px 0px 2px 2px rgba(0, 0, 0, 0.1);      
+  box-shadow:  0px 0px 2px 2px rgba(0, 0, 0, 0.1);
+  text-shadow: 1px 1px 1px #ffffff;
+  filter: dropshadow(color=#ffffff, offx=1, offy=1);
+  background: rgb(173,209,182); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(173,209,182,1) 0%, rgba(92,206,121,1) 50%, rgba(116,204,136,1) 51%, rgba(173,209,182,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(173,209,182,1)), color-stop(50%,rgba(92,206,121,1)), color-stop(51%,rgba(116,204,136,1)), color-stop(100%,rgba(173,209,182,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(173,209,182,1) 0%,rgba(92,206,121,1) 50%,rgba(116,204,136,1) 51%,rgba(173,209,182,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(173,209,182,1) 0%,rgba(92,206,121,1) 50%,rgba(116,204,136,1) 51%,rgba(173,209,182,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(173,209,182,1) 0%,rgba(92,206,121,1) 50%,rgba(116,204,136,1) 51%,rgba(173,209,182,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(173,209,182,1) 0%,rgba(92,206,121,1) 50%,rgba(116,204,136,1) 51%,rgba(173,209,182,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#add1b6', endColorstr='#add1b6',GradientType=0 ); /* IE6-9 */
+
+}
+
+
 
 footer{
   background: #2C2C2C;
