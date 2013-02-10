@@ -93,6 +93,7 @@ $(document).ready(function(){
 
   //Display options form controls
   $('#batchSelect').change(function(){
+    hidePopups();
     renderBatch($(this).val());
   });
 
@@ -133,6 +134,9 @@ $(document).ready(function(){
   $('#studentList').on('click', '.student', function (){
     hidePopups();
     showStudent(getStudentFromLogin($(this).data('login')));
+    $('#batches')
+      .parent().addClass('active')
+      .siblings().removeClass('active');
   });
 });
 
@@ -371,6 +375,7 @@ function getMostFollowers() {
   }).forEach(function(student){
     var studentDiv = formatStudent(student);
     $(studentDiv).addClass('followers');
+    //$('.followers', studentDiv).append('<a href="https://github.com/users/follow?target=' + student.login + '" class="btn btn-primary">follow</a>');
     $('#studentList').append(studentDiv);
   })
 }

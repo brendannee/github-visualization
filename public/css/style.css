@@ -172,6 +172,10 @@
   display: none;
 }
 
+#studentList .student.languages .additionalInfo {
+  max-width: 553px;
+}
+
 #studentList .student.oldest .additionalInfo .created {
   display: inline;
 }
@@ -182,6 +186,10 @@
 
 #studentList .student.followers .followers {
   display: inline;
+}
+
+#studentList .student.followers .followers a {
+  margin-left: 15px;
 }
 
 #repoInfo{

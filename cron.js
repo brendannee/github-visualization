@@ -24,9 +24,11 @@ module.exports = function(app){
             }
           , json: true
         }, function(e, response, body) {
-          body.batch_id = batch.batch_id;
-          body.login_lower = user.toLowerCase(0);
-          User.update({login_lower: user}, body, {upsert: true}, function(e, count, item){});
+          if(!body.message) {
+            body.batch_id = batch.batch_id;
+            body.login_lower = user.toLowerCase(0);
+            User.update({login_lower: user}, body, {upsert: true}, function(e, count, item){});
+          }
         });
         request.get({
             url: githubApi + 'users/' + user + '/repos'
