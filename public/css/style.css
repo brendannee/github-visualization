@@ -153,12 +153,9 @@
   margin-right:10px;
 }
 
-#studentList .student {
-  cursor: auto;
-}
-
 #studentList .student h3 {
     display: inline-block;
+    width: 300px;
 }
 
 #studentList .student .additionalInfo{
@@ -166,15 +163,11 @@
   display: inline-block;
 }
 
-#studentList .student .githubLink {
-  margin-left: 15px;
-  display: inline;
-}
-
 #studentList .student .company,
 #studentList .student .created,
 #studentList .student .repos,
-#studentList .student .followers {
+#studentList .student .followers,
+#studentList .student .githubLink {
   margin-left: 15px;
   display: none;
 }

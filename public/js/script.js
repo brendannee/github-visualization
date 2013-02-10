@@ -93,18 +93,21 @@ $(document).ready(function(){
 
   //Display options form controls
   $('#batchSelect').change(function(){
-    hidePopups();
     renderBatch($(this).val());
   });
 
-  $('#showForks').change(processStudent);
+  $('#showForks').change(function(){
+    showStudent(getStudentFromLogin($('#students .student.active').data('login')));
+  });
 
   $('#topMenu .nav li a').click(function(){
+    hidePopups();
     updateMenu(this);
     return false;
   });
 
   $('#batches').click(function(){
+    hidePopups();
     renderBatch("0");
   });
 
@@ -117,7 +120,15 @@ $(document).ready(function(){
   $('#oldest').click(oldestAccount);
 
   //Click handler for student divs
-  $('#students').on('click', '.student', processStudent);
+  $('#students').on('click', '.student', function(){
+    hidePopups();
+    showStudent(getStudentFromLogin($(this).data('login')));
+  });
+
+  $('#studentList').on('click', '.student', function (){
+    hidePopups();
+    showStudent(getStudentFromLogin($(this).data('login')));
+  });
 });
 
 function updateMenu(item){
@@ -158,51 +169,8 @@ function populateStudents(data){
 
 function hidePopups(){
   //hide popups
-  $('#students .student:nth-child(2)').popover('hide');
+  $('#students .student').popover('hide');
   options.showPopovers = false;
-}
-
-
-function processStudent(){
-
-  //update options
-  updateOptionsFromForm()
-
-  var div = ($(this).hasClass('student')) ? $(this) : $('.student.active');
-
-  $(div)
-    .addClass('active')
-    .children('.additionalInfo').slideDown()
-    .end()
-    .siblings()
-      .removeClass('active')
-      .children('.additionalInfo').slideUp();
-
-  //hide popover
-  $('#students .student:nth-child(2)').popover('hide');
-  options.showPopovers = false;
-
-  //hide stats
-  $('#repoInfo').css('visibility','hidden');
-
-
-  //get student info for chart
-  var studentName = $('.student.active').data('github');
-  students.forEach(function(student) {
-    if(student.login == studentName) {
-      drawChart(student);
-    }
-  });
-}
-
-
-function lookupBatch(student) {
-  for(var i=0; i < HSList.length; i++) {
-    if(student.login && HSList[i].indexOf(student.login.toLowerCase()) > -1) {
-      return i;
-    }
-  }
-  return false;
 }
 
 
@@ -236,7 +204,7 @@ function formatStudent(student, batch) {
       displayCreatedAt = created_at.getFullYear() + '-' + (created_at.getMonth() + 1) + '-' + created_at.getDate();
   return $('<div>')
     .addClass('student')
-    .data('github', student.login)
+    .data('login', student.login)
     .data('batch_id', student.batch_id)
     .html('<img src="' + student.avatar_url + '"><h3>' + bleach.sanitize(displayName) + '</h3>')
     .append($('<div>')
@@ -348,17 +316,24 @@ function drawChart(student){
         .html('<div style="background-color:' + fill(language) + '"></div>' + language)
         .appendTo('#legend');
     });
-
     return {children: repos};
   }
 }
 
+function getStudentFromLogin(login) {
+  return _.find(students, function(student) { return (student.login == login) });
+}
+
 
 function getRandom() {
-  hidePopups();
-
   //randomize students
-  var student = students[Math.floor(Math.random() * students.length)];
+  showStudent(students[Math.floor(Math.random() * students.length)]);
+}
+
+
+function showStudent(student) {
+  //hide stats
+  $('#repoInfo').css('visibility','hidden');
 
   //show batch
   renderBatch(student.batch_id);
@@ -366,18 +341,26 @@ function getRandom() {
   //select student div
   $('.student')
     .removeClass('active')
+    .children('.additionalInfo').slideUp()
+    .end()
     .filter(function(){
-      return $(this).data('github') == student.login;
-    }).addClass('active');
+      return $(this).data('login') == student.login;
+    })
+    .addClass('active')
+    .children('.additionalInfo').slideDown();
 
-  processStudent();
+  //update options
+  updateOptionsFromForm()
+
+  //get student info for chart
+  drawChart(student);
 
   //randomize repos
   showRepoInfo(student.repos[Math.floor(Math.random() * student.repos.length)]);
 
   //scroll to user
-  var index = $('.student').index($('.student[data-github=' + student.login + ']'));
-  $('#students').scrollTop(index * 50);
+  var index = $('.student').index($('.student.active'));
+  $('#students').scrollTop(index * 50 - 25);
 }
 
 
