@@ -102,7 +102,10 @@ $(document).ready(function(){
 
   $('#topMenu .nav li a').click(function(){
     hidePopups();
-    updateMenu(this);
+    $(this)
+      .parent().addClass('active')
+      .siblings().removeClass('active');
+
     return false;
   });
 
@@ -116,6 +119,8 @@ $(document).ready(function(){
   $('#mostFollowers').click(getMostFollowers);
 
   $('#mostRepos').click(getMostRepos);
+
+  $('#mostLanguages').click(getMostLanguages);
 
   $('#oldest').click(oldestAccount);
 
@@ -131,19 +136,12 @@ $(document).ready(function(){
   });
 });
 
-function updateMenu(item){
-   $(item)
-    .parent().addClass('active')
-    .siblings().removeClass('active');
-}
-
 
 function resizeWindow() {
   //make app the height of the window
   var minHeight = 400
     , contentHeight = $(window).height() - $('#topMenu').height() - $('footer').height()
     , studentsHeight = $(window).height() - $('#topMenu').height() - $('footer').height() - $('#displayOptionsContainer').height();
-
   $('#content').height(Math.max(contentHeight, minHeight));
   $('#students').height(studentsHeight);
 }
@@ -197,6 +195,7 @@ function renderBatch(batch_id){
   //resize window when done
   resizeWindow();
 }
+
 
 function formatStudent(student, batch) {
   var displayName = student.name || student.login,
@@ -367,7 +366,6 @@ function showStudent(student) {
 function getMostFollowers() {
   $('#content').hide();
   $('#studentList').empty().show();
-  hidePopups();
   _.sortBy(students, function(student){
     return -student.followers;
   }).forEach(function(student){
@@ -383,7 +381,6 @@ function getMostRepos() {
   $('#studentList')
     .empty()
     .show();
-  hidePopups();
   _.sortBy(students, function(student, idx){
     students[idx].nonfork_repos = student.repos.filter(function(repo){
       return !repo.fork;
@@ -398,10 +395,24 @@ function getMostRepos() {
 }
 
 
+function getMostLanguages() {
+  $('#content').hide();
+  $('#studentList').empty().show();
+  _.sortBy(students, function(student, idx){
+    students[idx].languages = _.uniq(_.map(student.repos, function(repo) { return repo.language })).sort();
+    return -students[idx].languages.length;
+  }).forEach(function(student){
+    var studentDiv = formatStudent(student);
+    $(studentDiv).addClass('languages');
+    $('.additionalInfo', studentDiv).text(_.reject(student.languages, function(language) { return language == null; }).join(', '));
+    $('#studentList').append(studentDiv);
+  })
+}
+
+
 function oldestAccount() {
   $('#content').hide();
   $('#studentList').empty().show();
-  hidePopups();
   _.sortBy(students, function(student){
     var created_at = Date.parse(student.created_at);
     return created_at;
