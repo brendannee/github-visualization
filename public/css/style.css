@@ -23,7 +23,11 @@
   color: #333;
 }
 
-.navbar .nav .active a  {
+.navbar .nav>li.active>a  {
+  background: #000;
+}
+
+.navbar .nav>li>a:hover {
   background: #049426;
 }
 
@@ -149,10 +153,6 @@
   margin-right:10px;
 }
 
-.student .additionalInfo .created {
-  display: none;
-}
-
 #studentList .student {
   cursor: auto;
 }
@@ -166,24 +166,29 @@
   display: inline-block;
 }
 
-#studentList .student .githubLink,
-#studentList .student .company,
-#studentList .student .created {
+#studentList .student .githubLink {
   margin-left: 15px;
   display: inline;
 }
 
-#studentList .student.repos .followers {
+#studentList .student .company,
+#studentList .student .created,
+#studentList .student .repos,
+#studentList .student .followers {
+  margin-left: 15px;
   display: none;
 }
 
-#studentList .student.followers .repos {
-  display: none;
+#studentList .student.oldest .additionalInfo .created {
+  display: inline;
 }
 
-#studentList .student.oldest .followers,
-#studentList .student.oldest .repos {
-  display: none;
+#studentList .student.repos .repos {
+  display: inline;
+}
+
+#studentList .student.followers .followers {
+  display: inline;
 }
 
 #repoInfo{
