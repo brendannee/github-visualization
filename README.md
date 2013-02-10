@@ -1,10 +1,12 @@
 #Hacker School Github Visualzation
 
-I wanted to know what other [Hacker Schoolers](http://hackerschool.com) were working on, what their experience was pre- and post-hacker school and also what languages they were using. I created the Hacker School Project Visualization to answer these questions. To make it simple for everyone to download, test and fork, all the code is client-side. After requesting a lot of information from github, everything is cached in sessionStorage so browsing is very fast. [D3](http://d3js.org) was used for the visualization.
+I wanted to know what other [Hacker Schoolers](http://hackerschool.com) were working on, what languages they were using and a fast way to browse their projects. I created the [Hacker School Project Visualization](http://hs.bn.ee) to answer these questions. [D3](http://d3js.org) was used for the visualization.
+
+If you are a Hacker Schoolet and your github account isn't showing up, just fork this project, add yourself to lib/users.js and do a pull request.  Pull requests are welcome for other improvements and visualizations.
 
 ## Example
 
-This is live at [http://hs.bn.ee](http://hs.bn.ee) - however the code is all client-side so you can just download and view it yourself.
+View it live at [http://hs.bn.ee](http://hs.bn.ee).
 
 ## Credits
 
