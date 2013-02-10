@@ -13,7 +13,19 @@
         <a class="brand" href="#">Hacker School Projects</a>
         <ul class="nav">
           <li class="active">
+            <a href="#" id="batches">Batches</a>
+          </li>
+          <li>
             <a href="#" id="random">Random</a>
+          </li>
+          <li>
+            <a href="#" id="mostFollowers">Most followers</a>
+          </li>
+          <li>
+            <a href="#" id="mostRepos">Most repos</a>
+          </li>
+          <li>
+            <a href="#" id="oldest">Oldest Account</a>
           </li>
         </ul>
       </div>
@@ -21,13 +33,6 @@
   </div>
 
   <div class="container">
-    
-    <div id="loading" class="well">
-      Loading...
-      <div class="progress progress-info progress-striped active">
-        <div class="bar" style="width: 1%;"></div>
-      </div>
-    </div>
     
     <div id="content">
       <div id="leftSidebar">
@@ -55,9 +60,8 @@
         <div class="stats">
           <div class="watchers">Watchers: <span></span></div>
           <div class="forks">Forks: <span></span></div>
-          <div class="collaborators">Collaborators: <span></span></div>
-          <div class="languages">Languages: <span></span></div>
-          <div class="commits">Last Commit: <span></span></div>
+          <div class="languages">Language: <span></span></div>
+          <div class="created">Created: <span></span></div>
         </div>
         <div class="link"><a href="#"></a></div>
       </div>
@@ -66,6 +70,9 @@
         <div id="legend"></div>
       </div>
       
+    </div>
+
+    <div id="studentList">
     </div>
    
   </div> <!-- /container -->
@@ -79,9 +86,10 @@
   </footer>
 
 
-  <script src="js/jquery-1.7.1.min.js"></script>
-  <script src="js/d3.min.js"></script>
-  <script src="js/d3.layout.min.js"></script>
+  <script src="js/libs/jquery-1.9.0.min.js"></script>
+  <script src="js/libs/underscore-min.js"></script>
+  <script src="js/libs/d3.min.js"></script>
+  <script src="js/libs/d3.layout.min.js"></script>
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
 </body>

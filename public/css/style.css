@@ -19,7 +19,11 @@
   margin-left:50px;
 }
 
-.navbar .nav .active a {
+.navbar .nav>li>a {
+  color: #333;
+}
+
+.navbar .nav .active a  {
   background: #049426;
 }
 
@@ -38,6 +42,7 @@
   background: linear-gradient(top, rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.19) 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#14000000', endColorstr='#30000000',GradientType=0 ); /* IE6-9 */
   overflow:hidden;
+  padding-top: 5px;
 }
 
 
@@ -73,8 +78,11 @@
 }
 
 #content{
-  display:none;
   overflow:hidden;
+}
+
+#studentList {
+  display: none;
 }
 
 #students{
@@ -83,7 +91,7 @@
   background:#EEE;
 }
 
-#students .student{
+.student{
   clear:both;
   overflow:hidden;
   padding:4px 10px;
@@ -94,23 +102,23 @@
   box-shadow: inset 0px 3px 4px 1px rgba(150, 150, 150, 0.1);
 }
 
-#students .student:first-child{
+.student:first-child{
   border-top:1px solid #ccc;
 }
 
-#students .student:hover,
-#students .student.active:hover{
+.student:hover,
+.student.active:hover{
   background:#e6e6e6;
   -webkit-box-shadow: inset 0px 0px 4px 1px rgba(150, 150, 150, 0.2);
   -moz-box-shadow: inset 0px 0px 4px 1px rgba(150, 150, 150, 0.2);
   box-shadow: inset 0px 0px 4px 1px rgba(150, 150, 150, 0.2);
 }
 
-#students .student.active{
+.student.active{
   background:#e6e6e6;
 }
 
-#students .student img{
+.student img{
   float:left;
   width:40px;
   height:40px;
@@ -120,7 +128,7 @@
   box-shadow:         0px 1px 9px rgba(50, 50, 50, 0.75);
 }
 
-#students .student h3{
+.student h3{
   font-size:20px;
   line-height:40px;
   overflow: hidden;
@@ -129,24 +137,53 @@
   filter: dropshadow(color=#d4d4d4, offx=1, offy=1);
 }
 
-#students .student .additionalInfo{
+.student .additionalInfo{
   display:none;
   clear:both;
   padding-top:5px;
 }
 
-#students .student .additionalInfo .repos,
-#students .student .additionalInfo .followers{
+.student .additionalInfo .repos,
+.student .additionalInfo .followers{
   display:inline-block;
   margin-right:10px;
-
 }
 
-#loading{
-  width:500px;
-  position: absolute;
-  top:300px;
-  left: 29%;
+.student .additionalInfo .created {
+  display: none;
+}
+
+#studentList .student {
+  cursor: auto;
+}
+
+#studentList .student h3 {
+    display: inline-block;
+}
+
+#studentList .student .additionalInfo{
+  margin-left: 15px;
+  display: inline-block;
+}
+
+#studentList .student .githubLink,
+#studentList .student .company,
+#studentList .student .created {
+  margin-left: 15px;
+  display: inline;
+}
+
+#studentList .student.repos .followers {
+  display: none;
+}
+
+#studentList .student.followers .repos {
+  display: none;
+}
+
+#studentList .student.oldest .followers,
+#studentList .student.oldest .repos {
+  display: none;
 }
 
 #repoInfo{
@@ -154,7 +191,7 @@
   width:600px;
   float:left;
   padding: 0 15px;
-  height:125px;
+  height:145px;
   overflow:hidden;
 }
 
