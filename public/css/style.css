@@ -1,16 +1,20 @@
+body {
+  background: #e6e6e6;
+}
+
 .navbar{
   margin-bottom:0;
+  position: relative;
 }
 
 .navbar-inner{
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
-  background: #00E837;
+  background: rgb(173, 209, 182);
 }
 
 .navbar .brand {
-  text-shadow: 1px 1px 3px #ccc;
   color:#111;
   font-weight: bold;
 }
@@ -21,6 +25,7 @@
 
 .navbar .nav>li>a {
   color: #333;
+  text-shadow: none;
 }
 
 .navbar .nav>li.active>a  {
@@ -83,10 +88,16 @@
 
 #content{
   overflow:hidden;
+  background: #fff;
+  border-right: 1px solid rgb(204, 204, 204);
+  border-left: 1px solid rgb(204, 204, 204);;
 }
 
 #studentList {
   display: none;
+  background: #fff;
+  border-right: 1px solid rgb(204, 204, 204);
+  border-left: 1px solid rgb(204, 204, 204);;
 }
 
 #students{
@@ -196,13 +207,14 @@
   visibility:hidden;
   width:600px;
   float:left;
-  padding: 0 15px;
+  padding: 10px 15px;
   height:145px;
   overflow:hidden;
 }
 
 #repoInfo h3{
   margin-right:7px;
+  font-size: 20px
 }
 
 #repoInfo h3 .fork {

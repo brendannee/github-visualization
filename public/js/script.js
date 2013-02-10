@@ -81,28 +81,48 @@ var students
     };
 
 
-$(document).ready(function(){
+$(document).ready(function (){
   //Listen for window resize
   window.onresize = resizeWindow;
 
   //initial options
   updateOptionsFromForm();
-  $.getJSON('/api/batches', populateBatches);
+  $.getJSON('/api/batches', function (batches){
+    batches.forEach(function (batch){
+      var formattedDate = new Date(batch.startDate);
+      $('#batchSelect').append('<option value="' + batch.batch_id + '">' + batch.batch_id + ' (' + (formattedDate.getMonth() + 1) + '/' + formattedDate.getFullYear() + ')</option>');
+    });
+  });
 
-  $.getJSON('/api/students', populateStudents);
+  $.getJSON('/api/students', function (data){
+    students = data;
+    students.forEach(function (student, idx){
+      students[idx].nonfork_repos = student.repos.filter(function (repo){
+        return !repo.fork;
+      }).length;
+      students[idx].languages = _.uniq(_.map(_.filter(student.repos, function (repo) { 
+        return !repo.fork
+      }), function (repo) {
+        return repo.language 
+      })).sort();
+    })
+
+    renderBatch("0");
+  });
 
   //Display options form controls
-  $('#batchSelect').change(function(){
+  $('#batchSelect').change(function (){
     hidePopups();
     renderBatch($(this).val());
   });
 
-  $('#showForks').change(function(){
+  $('#showForks').change(function (){
     hidePopups();
+    updateOptionsFromForm()
     showStudent(getStudentFromLogin($('#students .student.active').data('login')));
   });
 
-  $('#topMenu .nav li a').click(function(){
+  $('#topMenu .nav li a').click(function (){
     hidePopups();
     $(this)
       .parent().addClass('active')
@@ -111,7 +131,7 @@ $(document).ready(function(){
     return false;
   });
 
-  $('#batches').click(function(){
+  $('#batches').click(function (){
     hidePopups();
     renderBatch("0");
   });
@@ -127,7 +147,7 @@ $(document).ready(function(){
   $('#oldest').click(oldestAccount);
 
   //Click handler for student divs
-  $('#students').on('click', '.student', function(){
+  $('#students').on('click', '.student', function (){
     hidePopups();
     showStudent(getStudentFromLogin($(this).data('login')));
   });
@@ -158,19 +178,6 @@ function updateOptionsFromForm() {
 }
 
 
-function populateBatches(batches){
-  batches.forEach(function(batch){
-    var formattedDate = new Date(batch.startDate);
-    $('#batchSelect').append('<option value="' + batch.batch_id + '">' + batch.batch_id + ' (' + (formattedDate.getMonth() + 1) + '/' + formattedDate.getFullYear() + ')</option>');
-  });
-}
-
-
-function populateStudents(data){
-  students = data;
-  renderBatch("0");
-}
-
 function hidePopups(){
   //hide popups
   $('#students .student').popover('hide');
@@ -186,7 +193,7 @@ function renderBatch(batch_id){
   //select matching from dropdown
   $('#batchSelect').val(batch_id);
 
-  students.forEach(function(student){
+  students.forEach(function (student){
     if(student.batch_id == batch_id){
       $('#students').append(formatStudent(student));
     }
@@ -206,7 +213,8 @@ function renderBatch(batch_id){
 function formatStudent(student, batch) {
   var displayName = student.name || student.login,
       created_at = new Date(student.created_at),
-      displayCreatedAt = created_at.getFullYear() + '-' + (created_at.getMonth() + 1) + '-' + created_at.getDate();
+      displayCreatedAt = created_at.getFullYear() + '-' + (created_at.getMonth() + 1) + '-' + created_at.getDate(),
+      company = (student.company) ? 'Company: ' + student.company : '';
   return $('<div>')
     .addClass('student')
     .data('login', student.login)
@@ -219,16 +227,16 @@ function formatStudent(student, batch) {
         .text('Followers: ' + student.followers))
       .append($('<div>')
         .addClass('repos')
-        .text('Repos: ' + student.public_repos))
+        .text('Repos: ' + ((options.forks) ? student.public_repos : student.nonfork_repos)))
       .append($('<div>')
         .addClass('created')
-        .html(displayCreatedAt))
+        .text("Since: " + displayCreatedAt))
       .append($('<div>')
         .addClass('githubLink')
         .html('<a href="' + student.html_url + '">' + student.html_url + '</a>'))
       .append($('<div>')
         .addClass('company')
-        .html('Company: ' + student.company || '')));
+        .text(company)));
 }
 
 
@@ -248,7 +256,7 @@ function showRepoInfo(repo) {
     $('#repoInfo .watchers span').html(repo.watchers_count);
     $('#repoInfo .languages span')
       .html(repo.language)
-      .css('color', colors[repo.language]);
+      .css('color', fill(repo.language));
     $('#repoInfo .created span').text($.timeago(repo.created_at));
     $('#repoInfo .link a')
       .html(repo.html_url)
@@ -258,11 +266,11 @@ function showRepoInfo(repo) {
   }
 }
 
-function fill(language) {
-    return colors[language] || '#DDD';
+function fill (language) {
+  return colors[language] || '#DDD';
 }
 
-function drawChart(student){
+function drawChart (student){
 
   var r = Math.min(615, ( $('#content').height() - $('#repoInfo').height() ))
     , format = d3.format(",d");
@@ -281,66 +289,55 @@ function drawChart(student){
     
   var node = vis.selectAll("g.node")
     .data(bubble.nodes(classes(student))
-    .filter(function(d) { return !d.children; }))
+    .filter(function (d) { return !d.children; }))
     .enter().append("g")
     .attr("class", "node")
-    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+    .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
     .on('mouseover', showRepoInfo);
 
   node.append("title")
-    .text(function(d) { return d.name + ": " + d.description });
+    .text(function (d) { return d.name + ": " + d.description });
 
   node.append("circle")
-    .attr("r", function(d) { return d.r; })
-    .style("fill", function(d) { return fill(d.language); });
+    .attr("r", function (d) { return d.r; })
+    .style("fill", function (d) { return fill(d.language); });
 
   node.append("text")
     .attr("text-anchor", "middle")
     .attr("dy", ".3em")
-    .text(function(d) { return d.name.substring(0, d.r / 3); });
+    .text(function (d) { return d.name.substring(0, d.r / 3); });
+
+  $('#legend').empty();
+  student.languages.forEach(function (language){
+    $('<div>')
+      .addClass(language + ' legend')
+      .html('<div style="background-color:' + fill(language) + '"></div>' + language)
+      .appendTo('#legend');
+  });
 
   // Returns a flattened hierarchy containing all leaf nodes under the root.
   function classes(student) {
-    var repos = []
-      , languages = [];
-
-    student.repos.forEach(function(repo) {
-      //remove forks, if option is set
-      if(!repo.fork || options.forks){
-        repo.value = repo.size;
-        repos.push(repo);
-      }
-
-      //build legend
-      if(languages.indexOf(repo.language) == -1){
-        languages.push(repo.language);
-      }
-    });
-
-    $('#legend').empty();
-    languages.forEach(function(language){
-      $('<div>')
-        .addClass(language + ' legend')
-        .html('<div style="background-color:' + fill(language) + '"></div>' + language)
-        .appendTo('#legend');
+    var repos = _.filter(student.repos, function (repo) {
+      repo.value = repo.size;
+      return !repo.fork || options.forks; 
     });
     return {children: repos};
   }
 }
 
-function getStudentFromLogin(login) {
-  return _.find(students, function(student) { return (student.login == login) });
+function getStudentFromLogin (login) {
+  return _.find(students, function (student) { return (student.login == login) });
 }
 
 
-function getRandom() {
+function getRandom () {
   //randomize students
   showStudent(students[Math.floor(Math.random() * students.length)]);
   scrollToActiveStudent();
 }
 
 
-function showStudent(student) {
+function showStudent (student) {
   //hide stats
   $('#repoInfo').css('visibility','hidden');
 
@@ -353,20 +350,18 @@ function showStudent(student) {
       $(this).parents('.student').removeClass('active');
     });
   $('.student')
-    .filter(function(){
+    .filter(function (){
       return $(this).data('login') == student.login;
     })
     .addClass('active')
     .find('.additionalInfo').slideDown('fast');
 
-  //update options
-  updateOptionsFromForm()
-
   //get student info for chart
   drawChart(student);
 
   //randomize repos
-  showRepoInfo(student.repos[Math.floor(Math.random() * student.repos.length)]);
+  var repos = _.filter(student.repos, function (repo) { return !repo.fork || options.forks ; });
+  showRepoInfo(repos[_.random(repos.length - 1)]);
 }
 
 function scrollToActiveStudent () {
@@ -376,12 +371,12 @@ function scrollToActiveStudent () {
 }
 
 
-function getMostFollowers() {
+function getMostFollowers () {
   $('#content').hide();
   $('#studentList').empty().show();
-  _.sortBy(students, function(student){
+  _.sortBy(students, function (student){
     return -student.followers;
-  }).forEach(function(student){
+  }).forEach(function (student){
     var studentDiv = formatStudent(student);
     $(studentDiv).addClass('followers');
     //$('.followers', studentDiv).append('<a href="https://github.com/users/follow?target=' + student.login + '" class="btn btn-primary">follow</a>');
@@ -395,12 +390,9 @@ function getMostRepos() {
   $('#studentList')
     .empty()
     .show();
-  _.sortBy(students, function(student, idx){
-    students[idx].nonfork_repos = student.repos.filter(function(repo){
-      return !repo.fork;
-    }).length;
-    return -students[idx].nonfork_repos
-  }).forEach(function(student){
+  _.sortBy(students, function (student){
+    return -student.nonfork_repos
+  }).forEach(function (student){
     var studentDiv = formatStudent(student);
     $(studentDiv).addClass('repos');
     $('.repos', studentDiv).html('Repos: ' + student.nonfork_repos);
@@ -412,13 +404,12 @@ function getMostRepos() {
 function getMostLanguages() {
   $('#content').hide();
   $('#studentList').empty().show();
-  _.sortBy(students, function(student, idx){
-    students[idx].languages = _.uniq(_.map(student.repos, function(repo) { return repo.language })).sort();
-    return -students[idx].languages.length;
-  }).forEach(function(student){
+  _.sortBy(students, function (student){
+    return -student.languages.length;
+  }).forEach(function (student){
     var studentDiv = formatStudent(student);
     $(studentDiv).addClass('languages');
-    $('.additionalInfo', studentDiv).text(_.reject(student.languages, function(language) { return language == null; }).join(', '));
+    $('.additionalInfo', studentDiv).text(_.reject(student.languages, function (language) { return language == null; }).join(', '));
     $('#studentList').append(studentDiv);
   })
 }
@@ -427,10 +418,9 @@ function getMostLanguages() {
 function oldestAccount() {
   $('#content').hide();
   $('#studentList').empty().show();
-  _.sortBy(students, function(student){
-    var created_at = Date.parse(student.created_at);
-    return created_at;
-  }).forEach(function(student){
+  _.sortBy(students, function (student){
+    return Date.parse(student.created_at);
+  }).forEach(function (student){
     var studentDiv = formatStudent(student);
     $(studentDiv).addClass('oldest');
     $('#studentList').append(studentDiv);
