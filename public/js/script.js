@@ -477,17 +477,19 @@ function summary() {
 
   var languages = _.clone(colors);
   _.each(languages, function(val, key){
-    languages[key] = 0;
+    languages[key] = { value: 0, students: [], label: key };
   });
   students.forEach(function (student){
     student.repos.forEach(function (repo){
-      if(repo.language){
-        languages[repo.language]++;
+      if(repo.language && languages[repo.language]){
+        languages[repo.language].value++;
+        languages[repo.language].students.push(student.login);
       }
     });
   });
-  var data = _.filter(_.map(languages, function(val, key){
-    return {label: key, value: val};
+  var data = _.filter(_.map(languages, function(val, key) {
+    val.students = _.uniq(val.students, true);
+    return val;
   }), function(val){
     return val.value > 0;
   });
@@ -531,7 +533,10 @@ function summary() {
         })
         .attr("dy", ".35em")
         .attr("text-anchor", "middle")
-        .text(function(d) { if((d.endAngle - d.startAngle) > 0.1) { return d.data.label; }});    
+        .text(function(d) { if((d.endAngle - d.startAngle) > 0.1) { return d.data.label; }});
+
+      arcs.append("svg:title")
+        .text(function(d) { return d.data.label + ": " + d.data.students.join(', ')})
 
 
  $('#langchart .legendContainer').empty();
@@ -540,6 +545,7 @@ function summary() {
     $('<div>')
       .addClass('legend')
       .html('<div style="background-color:' + fill(item.label) + '"></div>' + item.label + ' (' + item.value + ')')
+      .attr('title', item.students.join(', '))
       .appendTo(container);
   });
  
