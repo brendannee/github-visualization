@@ -86,7 +86,23 @@ body {
   width:125px;
 }
 
-#content{
+#loading {
+  margin: 200px auto;
+  padding: 25px;
+  text-align: center;
+  width: 300px;
+  height: 100px;
+  font-size: 24px;
+  font-weight: bold;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 3px 4px 1px rgba(150, 150, 150, 0.1);
+  -moz-box-shadow: 0px 3px 4px 1px rgba(150, 150, 150, 0.1);
+  box-shadow: 0px 3px 4px 1px rgba(150, 150, 150, 0.1);
+}
+
+#repoView{
+  display: none;
   overflow:hidden;
   background: #fff;
   border-right: 1px solid rgb(204, 204, 204);
@@ -94,11 +110,11 @@ body {
 }
 
 #studentList {
-  display: none;
   background: #fff;
   border-right: 1px solid rgb(204, 204, 204);
   border-left: 1px solid rgb(204, 204, 204);
   overflow: hidden;
+  min-height: 300px;
 }
 
 #students{
@@ -179,9 +195,14 @@ body {
 #studentList .student .created,
 #studentList .student .repos,
 #studentList .student .followers,
-#studentList .student .githubLink {
+#studentList .student .githubLink,
+#studentList .student .batch {
   margin-left: 15px;
   display: none;
+}
+
+#studentList .student .additionalInfo .batch {
+  display: inline;
 }
 
 #studentList .student.languages .additionalInfo {
@@ -200,7 +221,7 @@ body {
   display: inline;
 }
 
-#studentList .student.followers .followers a {
+#studentList .student.followers a.followMe {
   margin-left: 15px;
 }
 
@@ -317,6 +338,10 @@ circle {
   padding: 15px 10px;
   margin: 0 auto;
   width: 600px;
+}
+
+.summary h2 {
+  padding: 15px;
 }
 
 .summary .title {

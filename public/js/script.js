@@ -100,6 +100,7 @@ $(document).ready(function (){
   });
 
   $.getJSON('/api/students', function (data){
+    $('#loading').fadeOut();
     students = data;
     students.forEach(function (student, idx){
       students[idx].nonfork_repos = student.repos.filter(function (repo){
@@ -112,7 +113,7 @@ $(document).ready(function (){
       })).sort();
     })
 
-    renderBatch("4");
+    summary();
   });
 
   //Display options form controls
@@ -136,10 +137,7 @@ $(document).ready(function (){
     return false;
   });
 
-  $('#batches').click(function (){
-    hidePopups();
-    renderBatch("4");
-  });
+  $('#batches').click(renderBatch);
 
   $('#random').click(getRandom);
 
@@ -159,6 +157,10 @@ $(document).ready(function (){
     showStudent(getStudentFromLogin($(this).data('login')));
   });
 
+  $('#studentList').on('click', '.student a', function (e) {
+    e.stopPropagation();
+  });
+
   $('#studentList').on('click', '.student', function (){
     hidePopups();
     showStudent(getStudentFromLogin($(this).data('login')));
@@ -175,7 +177,7 @@ function resizeWindow() {
   var minHeight = 400
     , contentHeight = $(window).height() - $('#topMenu').height() - $('footer').height()
     , studentsHeight = $(window).height() - $('#topMenu').height() - $('footer').height() - $('#displayOptionsContainer').height();
-  $('#content').height(Math.max(contentHeight, minHeight));
+  $('#repoView').height(Math.max(contentHeight, minHeight));
   $('#students').height(studentsHeight);
 }
 
@@ -193,8 +195,9 @@ function hidePopups(){
 
 
 function renderBatch(batch_id){
+  batch_id = (!isNaN(parseFloat(batch_id))) ? batch_id : 4;
   $('#students').empty();
-  $('#content').show();
+  $('#repoView').show();
   $('#studentList').hide();
 
   //select matching from dropdown
@@ -212,8 +215,16 @@ function renderBatch(batch_id){
       .popover('show');
   }
 
+  clearRepos();
+
   //resize window when done
   resizeWindow();
+}
+
+function clearRepos() {
+  d3.select("#chart svg").remove();
+  $('#chart .legendContainer').empty();
+  $('#repoInfo').css('visibility', 'hidden');
 }
 
 
@@ -238,6 +249,9 @@ function formatStudent(student, batch) {
       .append($('<div>')
         .addClass('created')
         .text("Since: " + displayCreatedAt))
+      .append($('<div>')
+        .addClass('batch')
+        .text("Batch: " + student.batch_id))
       .append($('<div>')
         .addClass('githubLink')
         .html('<a href="' + student.html_url + '">' + student.html_url + '</a>'))
@@ -279,7 +293,7 @@ function fill (language) {
 
 function drawChart (student){
 
-  var r = Math.min(615, ( $('#content').height() - $('#repoInfo').height() ))
+  var r = Math.min(615, ( $('#repoView').height() - $('#repoInfo').height() ))
     , format = d3.format(",d");
 
   var bubble = d3.layout.pack()
@@ -379,21 +393,21 @@ function scrollToActiveStudent () {
 
 
 function getMostFollowers () {
-  $('#content').hide();
+  $('#repoView').hide();
   $('#studentList').empty().show();
   _.sortBy(students, function (student){
     return -student.followers;
   }).forEach(function (student){
     var studentDiv = formatStudent(student);
     $(studentDiv).addClass('followers');
-    //$('.followers', studentDiv).append('<a href="https://github.com/users/follow?target=' + student.login + '" class="btn btn-primary">follow</a>');
+    $('.additionalInfo', studentDiv).append('<a href="https://github.com/' + student.login + '" class="btn btn-primary followMe" target="_blank">follow</a>');
     $('#studentList').append(studentDiv);
   })
 }
 
 
 function getMostRepos() {
-  $('#content').hide();
+  $('#repoView').hide();
   $('#studentList')
     .empty()
     .show();
@@ -409,7 +423,7 @@ function getMostRepos() {
 
 
 function getMostLanguages() {
-  $('#content').hide();
+  $('#repoView').hide();
   $('#studentList').empty().show();
   _.sortBy(students, function (student){
     return -student.languages.length;
@@ -423,7 +437,7 @@ function getMostLanguages() {
 
 
 function oldestAccount() {
-  $('#content').hide();
+  $('#repoView').hide();
   $('#studentList').empty().show();
   _.sortBy(students, function (student){
     return Date.parse(student.created_at);
@@ -435,7 +449,7 @@ function oldestAccount() {
 }
 
 function summary() {
-  $('#content').hide();
+  $('#repoView').hide();
   $('#studentList').empty().show();
 
 
