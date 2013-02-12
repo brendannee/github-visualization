@@ -112,8 +112,21 @@ $(document).ready(function (){
         return repo.language 
       })).sort();
     })
-
-    summary();
+    if(window.location.pathname == '/batches') {
+      $('#batches').trigger('click');
+    } else if(window.location.pathname == '/random') {
+      $('#random').trigger('click');
+    } else if(window.location.pathname == '/most-followers') {
+      $('#mostFollowers').trigger('click');
+    } else if(window.location.pathname == '/most-repos') {
+      $('#mostRepos').trigger('click');
+    } else if(window.location.pathname == '/most-languages') {
+      $('#mostLanguages').trigger('click');
+    } else if(window.location.pathname == '/oldest') {
+      $('#oldest').trigger('click');
+    } else {
+      $('#summary').trigger('click');
+    }
   });
 
   //Display options form controls
@@ -195,6 +208,7 @@ function hidePopups(){
 
 
 function renderBatch(batch_id){
+  window.history.pushState('', "Batches | Hacker School Visualization", "/batches");
   batch_id = (!isNaN(parseFloat(batch_id))) ? batch_id : 4;
   $('#students').empty();
   $('#repoView').show();
@@ -393,6 +407,7 @@ function scrollToActiveStudent () {
 
 
 function getMostFollowers () {
+  window.history.pushState('', "Most Followers | Hacker School Visualization", "/most-followers");
   $('#repoView').hide();
   $('#studentList').empty().show();
   _.sortBy(students, function (student){
@@ -407,6 +422,7 @@ function getMostFollowers () {
 
 
 function getMostRepos() {
+  window.history.pushState('', "Most Languages | Hacker School Visualization", "/most-repos");
   $('#repoView').hide();
   $('#studentList')
     .empty()
@@ -423,6 +439,7 @@ function getMostRepos() {
 
 
 function getMostLanguages() {
+  window.history.pushState('', "Languages | Hacker School Visualization", "/most-languages");
   $('#repoView').hide();
   $('#studentList').empty().show();
   _.sortBy(students, function (student){
@@ -437,6 +454,7 @@ function getMostLanguages() {
 
 
 function oldestAccount() {
+  window.history.pushState('', "Oldest Github Account | Hacker School Visualization", "/oldest");
   $('#repoView').hide();
   $('#studentList').empty().show();
   _.sortBy(students, function (student){
@@ -449,6 +467,7 @@ function oldestAccount() {
 }
 
 function summary() {
+  window.history.pushState('', "Summary | Hacker School Visualization", "/");
   $('#repoView').hide();
   $('#studentList').empty().show();
 

@@ -2,7 +2,9 @@ var models = require('./models/models')
   , async = require('async')
   , _ = require('underscore')
   , request = require('request')
-  , users = require('./lib/users');
+  , users = require('./lib/users')
+  , fs = require('fs')
+  , util = require('util');
 
 
 module.exports = function routes(app){
@@ -21,7 +23,9 @@ module.exports = function routes(app){
 
   //Nothing specified
   app.all('*', function notFound(req, res) {
-    res.send('Not Found');
+    res.writeHead(200, {'content-type': 'text/html'});
+    var rs = fs.createReadStream('public/index.html');
+    util.pump(rs, res);
   });
 
 }
