@@ -7,11 +7,12 @@ module.exports = function(app){
   var User = app.set('db').model('user')
     , githubApi = 'https://api.github.com/';
 
-  //drop records and update github data on launch
-  User.remove({}, function(){
-    updateGithubData();
-  });
-
+  //drop records and update github data 5 minutes after launch
+  setTimeout(function(){ 
+    User.remove({}, function(){
+      updateGithubData();
+    });
+  }, 600000);
   //update github data once per day
   new cronJob('00 42 1 * * *', updateGithubData, null, true);
 
