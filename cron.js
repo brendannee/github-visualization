@@ -7,25 +7,23 @@ module.exports = function(app){
   var User = app.set('db').model('user')
     , githubApi = 'https://api.github.com/';
 
-  //drop records and update github data 5 minutes after launch
-  setTimeout(function(){ 
-    User.remove({}, function(){
-      updateGithubData();
-    });
-  }, 600000);
+  //drop records and update github data 5 seconds after launch
+  setTimeout(function(){
+    User.remove({}, updateGithubData);
+  }, 5*1000);
   //update github data once per day
   new cronJob('00 42 1 * * *', updateGithubData, null, true);
 
   function updateGithubData () {
+    console.log('<<<<<<<<  Updating github data');
     users.forEach(function(batch){
       batch.users.forEach(function(user){
         user = user.toLowerCase();
         //fetch user info from github
         request.get({
             url: githubApi + 'users/' + user
-          , qs: {
-                access_token: app.set('githubToken')
-            }
+          , headers: { 'User-Agent': 'Hacker-School-Github-Visualization' }
+          , qs: { access_token: app.set('githubToken') }
           , json: true
         }, function(e, response, body) {
           if(!body.message) {
@@ -35,6 +33,7 @@ module.exports = function(app){
 
             request.get({
                 url: githubApi + 'users/' + user + '/repos'
+              , headers: { 'User-Agent': 'Hacker-School-Github-Visualization' }
               , qs: {
                     access_token: app.set('githubToken')
                 }
@@ -42,6 +41,8 @@ module.exports = function(app){
             }, function(e, response, body) {
               User.update({login_lower: user}, {$set: {repos: body}}, function(e, count, item){});
             });
+          } else {
+            console.log(body.message);
           }
         });
       });

@@ -12,13 +12,13 @@ module.exports = function routes(app){
 
   app.get('/api/students', function(req, res){
     User.find({}, function(err, docs){
-        res.json(docs);
-      });
-   
+      res.json(docs);
+    });
   });
 
+
   app.get('/api/batches', function(req, res){
-    res.json(users);   
+    res.json(users);
   });
 
   //Nothing specified
