@@ -8,11 +8,23 @@ If you are a Hacker Schoolet and your github account isn't showing up, just fork
 
 View it live at [http://hs.bn.ee](http://hs.bn.ee).
 
+## Running locally
+
+* Copy the `keys-sample.js` file to `keys.js`
+* Add your github token to `keys.js`
+* Install required node_modules
+
+    npm install
+
+* Run the app
+
+    node index.js
+
 ## Credits
 
 Brendan Nee  me@bn.ee
 
-## License 
+## License
 
 (The MIT License)
 
